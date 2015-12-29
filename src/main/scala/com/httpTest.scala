@@ -26,6 +26,8 @@ class httpTest extends httpCom {
     val content = new StringBuilder
     while (br.readLine() != null) {
       content.append(br.readLine)
+      content.append("\n")
+
     }
     content.toString
   }
@@ -38,6 +40,8 @@ class httpTest extends httpCom {
     val content = new StringBuilder
     while (br.readLine() != null) {
       content.append(br.readLine)
+      content.append("\n")
+
     }
     content.toString
 

@@ -3,8 +3,9 @@ var system = require('system');
 var webPage = require('webpage');
 var fs = require('fs');
 var page = webPage.create();
-var number = 0;
-var num = 2;
+var num = 200
+var i= 1
+
 // page.settings.userAgent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/534.34
 // (KHTML, like Gecko)Safari/534.34';
 // Mozilla/5.0 (Windows NT 6.1) AppleWebKit/534.34 (KHTML, like Gecko)
@@ -24,36 +25,37 @@ var root_url = 'http://www.landchina.com/default.aspx?tabid=263';
 page.onAlert = function (msg) {
     console.log('ALERT: ' + msg);
 };
-
+var ar = new Array
 
 page.onLoadFinished = function (status) {
-    if (number>3){
-        phantom.exit();
+    if(i===2){
+        console.log(page.content)
     }
-    page.render('E:\\Cz\\' + number + '.png')
-  //  fs.write('E:\\Cz\\' + number + '.txt', page.content, 'a');
-    console.log(page.content)
-    number++
-    console.log('load finish--------');
-    console.log('page.title---' + page.title);
 
-    console.log('page.url----' + page.url);
-    page.evaluate(function (num) {
+    if (!(num ===1)) {
 
-        var queryStr ='a[onclick="QueryAction.GoPage(\'TAB\','+num+')"]';
-        var arr = document.querySelectorAll(queryStr);
-        var ev = document.createEvent("MouseEvents");
-        ev.initEvent("click", true, true);
+        page.evaluate(function (num) {
 
-        if (arr.length == 0) {
-            window.alert('arr.length == 0');
-        }
-        else  {
-            window.alert(arr[arr.length-1].innerHTML);
-            arr[1].dispatchEvent(ev);
-        }
-    },num);
-    num++
+            var queryStr = 'input[onclick^="QueryAction.GoPage"]';
+            var arr = document.querySelectorAll(queryStr)
+            arr[0].setAttribute('onclick', 'QueryAction.GoPage(\'TAB\',' + num + ',200)')
+            var ev = document.createEvent("MouseEvents");
+            ev.initEvent("click", true, true);
+
+            if (arr.length == 0) {
+                window.alert('arr.length == 0');
+            }
+            else {
+
+                arr[0].dispatchEvent(ev);
+            }
+        }, num);
+
+    }else{
+        console.log(page.content)
+        phantom.exit()
+    }
+    i++
 };
 
 page.onUrlChanged = function (targetUrl) {
@@ -70,17 +72,15 @@ page.onResourceReceived = function (response) {
 
 
 page.onResourceError = function (resourceError) {
-    //console.log('Unable to load resource (#' + resourceError.id + 'URL:'
-    //    + resourceError.url + ')');
-    //console.log('Error code: ' + resourceError.errorCode + '. Description: '
-    //    + resourceError.errorString);
+    console.log('Error code: ' + resourceError.errorCode + '. Description: '
+        + resourceError.errorString);
 };
 
 
 function openPage(root_url) {
     page.open(root_url, function (status) {
         if (status === "success") {
-            console.log('page open is success');
+            //    console.log('page open is success');
         } else {
             phantom.exit();
         }
