@@ -15,6 +15,10 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor" % "2.3.10",
   "org.scalatest" % "scalatest_2.11" % "2.2.4" % "test",
   "com.typesafe.akka" %% "akka-remote" % "2.3.10",
-  "com.hynnet" % "json-lib" % "2.4"
+  "com.hynnet" % "json-lib" % "2.4",
+"org.apache.poi" % "poi" % "3.13",
+  "org.apache.poi" % "poi-ooxml" % "3.13",
+  "org.apache.poi" % "poi-ooxml-schemas" % "3.13",
+  "org.apache.xmlbeans" % "xmlbeans" % "2.6.0"
 
 )
