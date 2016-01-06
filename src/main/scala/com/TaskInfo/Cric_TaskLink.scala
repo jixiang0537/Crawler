@@ -7,9 +7,9 @@ import com.IClrawler.TaskInfo.Cric_DataInfo
  */
 class Cric_TaskLink(task: Cric_DataInfo) {
   var quarterlyDate =""
-  var weekDate ="2015年46周:2015年51周"
-  var monthDate ="2015年10月:2015年11月"
-  var dayDate = "2015-11-11:2015-12-14"
+  var weekDate ="2015年52周:2016年01周"
+  var monthDate ="2015年12月:2015年12月"
+  var dayDate = "2015-12-14:2015-01-04"
 
   def quarterLandLink = {
     val quarterLandLink = List(

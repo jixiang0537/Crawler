@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="SBT: com.hynnet:sqljdbc4-chs:4.0.2206.100:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.hynnet/sqljdbc4-chs/jars/sqljdbc4-chs-4.0.2206.100.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.hynnet/sqljdbc4-chs/docs/sqljdbc4-chs-4.0.2206.100-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.hynnet/sqljdbc4-chs/srcs/sqljdbc4-chs-4.0.2206.100-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

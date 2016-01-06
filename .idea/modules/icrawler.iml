@@ -34,7 +34,6 @@
     <orderEntry type="library" name="SBT: commons-lang:commons-lang:2.5:jar" level="project" />
     <orderEntry type="library" name="SBT: commons-logging:commons-logging:1.2:jar" level="project" />
     <orderEntry type="library" name="SBT: io.netty:netty:3.8.0.Final:jar" level="project" />
-    <orderEntry type="library" name="SBT: mysql:mysql-connector-java:5.1.27:jar" level="project" />
     <orderEntry type="library" name="SBT: net.sf.ezmorph:ezmorph:1.0.6:jar" level="project" />
     <orderEntry type="library" name="SBT: org.apache.httpcomponents:httpclient:4.5.1:jar" level="project" />
     <orderEntry type="library" name="SBT: org.apache.httpcomponents:httpcore:4.4.3:jar" level="project" />
@@ -49,5 +48,6 @@
     <orderEntry type="library" name="SBT: org.apache.poi:poi-ooxml-schemas:3.13:jar" level="project" />
     <orderEntry type="library" name="SBT: org.apache.xmlbeans:xmlbeans:2.6.0:jar" level="project" />
     <orderEntry type="library" name="SBT: stax:stax-api:1.0.1:jar" level="project" />
+    <orderEntry type="library" name="SBT: com.hynnet:sqljdbc4-chs:4.0.2206.100:jar" level="project" />
   </component>
 </module>

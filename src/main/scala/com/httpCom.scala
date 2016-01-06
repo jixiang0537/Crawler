@@ -1,7 +1,6 @@
 package com.IClrawler
 
 import java.io.{InputStreamReader, BufferedReader}
-import java.nio.charset.MalformedInputException
 import java.util
 
 import org.apache.http.Header
