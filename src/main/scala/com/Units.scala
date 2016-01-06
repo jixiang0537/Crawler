@@ -18,18 +18,35 @@ import scala.io.Source
  * Created by cz on 2015/8/7.
  */
 class Units {
-  def setheader(host: String,referer:String): Array[Header] = {
-    val ret = new Array[Header](9)
-    ret(0) = new BasicHeader("Host", host)
-    ret(1) = new BasicHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:35.0) Gecko/20100101 Firefox/35.0")
-    ret(2) = new BasicHeader("Accept", "application/x-ms-application, image/jpeg, application/xaml+xml, image/gif, image/pjpeg, application/x-ms-xbap, */*")
-    ret(3) = new BasicHeader("Accept-Language", "zh-CN")
-    ret(4) = new BasicHeader("Accept-Encoding", "gzip, deflate")
-    ret(5) = new BasicHeader("Connection", "keep-Alive")
-    ret(6) = new BasicHeader("Catch-Control", "no-cache")
-    ret(7) = new BasicHeader("DNT", "1")
-    ret(8) = new BasicHeader("Referer", referer)
-    ret
+  def setheader(host: String, referer: String): Array[Header] = {
+    referer match {
+      case "" => {
+        val ret = new Array[Header](8)
+        ret(0) = new BasicHeader("Host", host)
+        ret(1) = new BasicHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:35.0) Gecko/20100101 Firefox/35.0")
+        ret(2) = new BasicHeader("Accept", "application/x-ms-application, image/jpeg, application/xaml+xml, image/gif, image/pjpeg, application/x-ms-xbap, */*")
+        ret(3) = new BasicHeader("Accept-Language", "zh-CN")
+        ret(4) = new BasicHeader("Accept-Encoding", "gzip, deflate")
+        ret(5) = new BasicHeader("Connection", "keep-Alive")
+        ret(6) = new BasicHeader("Catch-Control", "no-cache")
+        ret(7) = new BasicHeader("DNT", "1")
+        ret
+      }
+      case _ => {
+        val ret = new Array[Header](9)
+        ret(0) = new BasicHeader("Host", host)
+        ret(1) = new BasicHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:35.0) Gecko/20100101 Firefox/35.0")
+        ret(2) = new BasicHeader("Accept", "application/x-ms-application, image/jpeg, application/xaml+xml, image/gif, image/pjpeg, application/x-ms-xbap, */*")
+        ret(3) = new BasicHeader("Accept-Language", "zh-CN")
+        ret(4) = new BasicHeader("Accept-Encoding", "gzip, deflate")
+        ret(5) = new BasicHeader("Connection", "keep-Alive")
+        ret(6) = new BasicHeader("Catch-Control", "no-cache")
+        ret(7) = new BasicHeader("DNT", "1")
+        ret(8) = new BasicHeader("Referer", referer)
+        ret
+      }
+    }
+
   }
 
   def addIp(path: String) = {
@@ -45,7 +62,7 @@ class Units {
     fos.write(sToByt, 0, s.length - 1)
   }
 
-  def JParse(array: Array[String], str: String,int: Int) = {
+  def JParse(array: Array[String], str: String, int: Int) = {
     var num = 0
     var num2 = -1
     val nbsLk = new NBS_TaskLink
@@ -64,12 +81,13 @@ class Units {
       val data = JSONObject.fromObject(jss.getString("data"))
       if (data.getString("hasdata") != "false") saveData = data.getString("strdata")
       num += 1
-      if (num%int ==1)num2+=1
-      if (num2>nbsLk.tagList(array(5).toInt).length-1) {
-        num=0;num2= 0
+      if (num % int == 1) num2 += 1
+      if (num2 > nbsLk.tagList(array(5).toInt).length - 1) {
+        num = 0;
+        num2 = 0
       }
-     // Units.intoSql.insetDataCric(array(1), array(2), array(3), array(4),nbsLk.tagList(array(5).toInt)(num2), date.toString, saveData)
-      saveData ="null"
+      // Units.intoSql.insetDataCric(array(1), array(2), array(3), array(4),nbsLk.tagList(array(5).toInt)(num2), date.toString, saveData)
+      saveData = "null"
     }
   }
 

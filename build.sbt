@@ -20,5 +20,4 @@ libraryDependencies ++= Seq(
   "org.apache.poi" % "poi-ooxml-schemas" % "3.13",
   "org.apache.xmlbeans" % "xmlbeans" % "2.6.0",
   "com.hynnet" % "sqljdbc4-chs" % "4.0.2206.100"
-
 )
