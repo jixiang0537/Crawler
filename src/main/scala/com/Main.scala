@@ -10,8 +10,8 @@ import com.IClrawler.Manage.Cric_Task
 object Main {
   def main(args: Array[String]) {
     val ct = new Cric_Task
-    ct.monthTask
-    ct.monthLandTask
+    //ct.monthTask
+    ct.hongGuanMonthTask
 
   }
 }
