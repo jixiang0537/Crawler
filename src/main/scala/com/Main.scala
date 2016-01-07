@@ -11,7 +11,7 @@ object Main {
   def main(args: Array[String]) {
     val ct = new Cric_Task
     //ct.monthTask
-    ct.hongGuanMonthTask
+    ct.mon
 
   }
 }

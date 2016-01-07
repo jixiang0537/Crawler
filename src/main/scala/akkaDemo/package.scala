@@ -61,10 +61,10 @@ class akkaHttp extends httpCom {
 
 class Demo extends Actor {
   override def receive = {
-    case (uri: String, unitAr: Array[Header]) =>        {
-                                                             val akkaHttp = new akkaHttp;
+        case (uri: String, unitAr: Array[Header]) =>         {
+                                                                 val akkaHttp = new akkaHttp
                                                                  akkaHttp.httpGet(uri, unitAr)
-                                                         }
+                                                             }
   }
 }
 
