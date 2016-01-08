@@ -3,7 +3,7 @@ var system = require('system');
 var webPage = require('webpage');
 var fs = require('fs');
 var page = webPage.create();
-var num = 200
+var num = system.args[1]
 var i= 1
 
 // page.settings.userAgent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/534.34

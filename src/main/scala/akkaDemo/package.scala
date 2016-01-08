@@ -1,6 +1,7 @@
 import java.io.{InputStreamReader, BufferedReader}
 import akka.actor.{Actor, Props, ActorSystem}
 import com.IClrawler.{httpCom, Units}
+import com.main
 import org.apache.http.Header
 import org.apache.http.client.methods.{HttpGet}
 import org.apache.http.impl.client.{DefaultConnectionKeepAliveStrategy, HttpClients}
@@ -13,30 +14,10 @@ object CrawlerAkka extends App {
   val baiduAr = us.setheader("www.baidu.com", "")
   val system = ActorSystem("CrawlerAkka")
   val greeter = system.actorOf(Props[Demo], "greeter")
-  val greeter2 = system.actorOf(Props[Demo], "greeter2")
-  val greeter3 = system.actorOf(Props[Demo], "greeter3")
-  val greeter4 = system.actorOf(Props[Demo], "greeter4")
-  val greeter5 = system.actorOf(Props[Demo], "greeter5")
-  val greeter6 = system.actorOf(Props[Demo], "greeter6")
-  val greeter7 = system.actorOf(Props[Demo], "greeter7")
-  val greeter8 = system.actorOf(Props[Demo], "greeter8")
-  val greeter9 = system.actorOf(Props[Demo], "greeter9")
-  val greeter10 = system.actorOf(Props[Demo], "greeter10")
-  val greeter11 = system.actorOf(Props[Demo], "greeter11")
-  val greeter12= system.actorOf(Props[Demo], "greeter12")
+  val greeter2 = system.actorOf(Props[Demo], "runPhantomjs")
+  greeter2 ! 1
 
-  greeter !("https://www.baidu.com/", baiduAr);
-  greeter2 !("https://www.baidu.com/", baiduAr);
-  greeter3 !("https://www.baidu.com/", baiduAr);
-  greeter4 !("https://www.baidu.com/", baiduAr);
-  greeter5 !("https://www.baidu.com/", baiduAr);
-  greeter6 !("https://www.baidu.com/", baiduAr);
-  greeter7 !("https://www.baidu.com/", baiduAr);
-  greeter8 !("https://www.baidu.com/", baiduAr);
-  greeter9 !("https://www.baidu.com/", baiduAr);
-  greeter10 !("https://www.baidu.com/", baiduAr);
-  greeter11 !("https://www.baidu.com/", baiduAr);
-  greeter12 !("https://www.baidu.com/", baiduAr);
+
 }
 
 class akkaHttp extends httpCom {
@@ -65,8 +46,13 @@ class Demo extends Actor {
                                                                  val akkaHttp = new akkaHttp
                                                                  akkaHttp.httpGet(uri, unitAr)
                                                              }
+        case x:Int =>  {
+          val main = new main
+//          main.runJS(x)
+        }
   }
 }
+
 
 
 
