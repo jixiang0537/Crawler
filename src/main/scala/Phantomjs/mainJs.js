@@ -24,12 +24,14 @@ var root_url = 'http://www.landchina.com/default.aspx?tabid=263';
 //setInterval(checkNoResponse,10000);
 page.onAlert = function (msg) {
     console.log('ALERT: ' + msg);
+
 };
 var ar = new Array
 
 page.onLoadFinished = function (status) {
     if(i===2){
         console.log(page.content)
+        phantom.exit();
     }
 
     if (!(num ===1)) {
