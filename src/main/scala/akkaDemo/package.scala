@@ -1,6 +1,7 @@
 import java.io.{InputStreamReader, BufferedReader}
 import akka.actor.{Actor, Props, ActorSystem}
 import com.IClrawler.{httpCom, Units}
+import com.TaskWork.runPhantom
 import com.main
 import org.apache.http.Header
 import org.apache.http.client.methods.{HttpGet}
@@ -14,9 +15,16 @@ object CrawlerAkka extends App {
   val baiduAr = us.setheader("www.baidu.com", "")
   val system = ActorSystem("CrawlerAkka")
   val greeter = system.actorOf(Props[Demo], "greeter")
-  val greeter2 = system.actorOf(Props[Demo], "runPhantomjs")
-  greeter2 ! 1
 
+  greeter ! 1
+
+}
+
+class maneg extends Actor {
+
+  override def receive = {
+    case (num: String) =>
+  }
 
 }
 
@@ -34,7 +42,7 @@ class akkaHttp extends httpCom {
       content.append(br.readLine())
       content.append("\n")
     }
-      println(content.length)
+    println(content.length)
     content.toString
 
   }
@@ -42,14 +50,14 @@ class akkaHttp extends httpCom {
 
 class Demo extends Actor {
   override def receive = {
-        case (uri: String, unitAr: Array[Header]) =>         {
-                                                                 val akkaHttp = new akkaHttp
-                                                                 akkaHttp.httpGet(uri, unitAr)
-                                                             }
-        case x:Int =>  {
-          val main = new main
-//          main.runJS(x)
-        }
+    case (uri: String, unitAr: Array[Header]) => {
+      val akkaHttp = new akkaHttp
+      akkaHttp.httpGet(uri, unitAr)
+    }
+    case x: Int => {
+      val rp = new runPhantom
+      rp.runJS(x)
+    }
   }
 }
 

@@ -15,12 +15,12 @@ var i= 1
 var receive_response_count_current = 0;
 var receive_response_count_last = 0;
 var receive_response_fail_count = 0;
-// ÅÀ³æ¿ªÊ¼ÅÀµÄÆğÊ¼Â·¾¶
+// çˆ¬è™«å¼€å§‹çˆ¬çš„èµ·å§‹è·¯å¾„
 
 var root_url = 'http://www.landchina.com/default.aspx?tabid=263';
 
 
-//Æô¶¯ÖÜÆÚ¼ì²éÓĞÎŞ»ØÓ¦
+//å¯åŠ¨å‘¨æœŸæ£€æŸ¥æœ‰æ— å›åº”
 //setInterval(checkNoResponse,10000);
 page.onAlert = function (msg) {
     console.log('ALERT: ' + msg);
@@ -30,7 +30,9 @@ var ar = new Array
 
 page.onLoadFinished = function (status) {
     if(i===2){
-        console.log(page.content)
+        fs.write("E:\\Cz\\"+num+".txt",page.content,"w")
+        console.log("é¡µé¢åŠ è½½æˆåŠŸ num ==" +num);
+        //     console.log(page.content)
         phantom.exit();
     }
 
@@ -54,7 +56,8 @@ page.onLoadFinished = function (status) {
         }, num);
 
     }else{
-        console.log(page.content)
+        fs.write("E:\\Cz\\"+num+".txt",page.content,"w")
+        console.log("é¡µé¢åŠ è½½æˆåŠŸ num ==" +num);
         phantom.exit()
     }
     i++
@@ -74,8 +77,8 @@ page.onResourceReceived = function (response) {
 
 
 page.onResourceError = function (resourceError) {
-    console.log('Error code: ' + resourceError.errorCode + '. Description: '
-        + resourceError.errorString);
+    //console.log('Error code: ' + resourceError.errorCode + '. Description: '
+    //    + resourceError.errorString);
 };
 
 

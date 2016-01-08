@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="Encoding" defaultCharsetForPropertiesFiles="GBK">
-    <file url="file://$PROJECT_DIR$/src/main/scala/com/Main.scala" charset="UTF-8" />
-    <file url="PROJECT" charset="GBK" />
+  <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
+    <file url="file://$PROJECT_DIR$/src/main/scala/Phantomjs/demo.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/scala/Phantomjs/mainJs.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/scala/akkaDemo/package.scala" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/scala/com/Manage/Cric_Task.scala" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/scala/com/TaskWork/NationalData_Work.scala" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/scala/com/Units.scala" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/scala/com/httpCom.scala" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/scala/com/httpTest.scala" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/scala/com/main.java" charset="UTF-8" />
+    <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>
