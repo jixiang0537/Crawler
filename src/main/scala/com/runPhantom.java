@@ -1,9 +1,11 @@
-package com.TaskWork;
+package com;
+
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import org.apache.log4j.Logger;
 
 /**
  * Created by dell on 2016/1/8.
@@ -13,7 +15,7 @@ public class runPhantom {
 
         StringBuilder conStr = new StringBuilder();
         Runtime runtime = Runtime.getRuntime();
-        String com  = "E:\\phantomjs-2.0.0-windows\\bin\\phantomjs.exe E:\\Cz\\ICrawler\\src\\main\\scala\\Phantomjs\\mainJs.js "+num+"";
+        String com  = "E:\\phantomjs-2.0.0-windows\\bin\\phantomjs.exe --load-images=false E:\\Cz\\ICrawler\\src\\main\\scala\\Phantomjs\\mainJs.js "+num+"";
         try {
             Process data = runtime.exec(com);
             InputStream conInput = data.getInputStream();

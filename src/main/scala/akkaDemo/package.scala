@@ -1,8 +1,7 @@
 import java.io.{InputStreamReader, BufferedReader}
 import akka.actor.{Actor, Props, ActorSystem}
 import com.IClrawler.{httpCom, Units}
-import com.TaskWork.runPhantom
-import com.main
+import com.{runPhantom, main}
 import org.apache.http.Header
 import org.apache.http.client.methods.{HttpGet}
 import org.apache.http.impl.client.{DefaultConnectionKeepAliveStrategy, HttpClients}
@@ -14,9 +13,12 @@ object CrawlerAkka extends App {
   val us = new Units
   val baiduAr = us.setheader("www.baidu.com", "")
   val system = ActorSystem("CrawlerAkka")
-  val greeter = system.actorOf(Props[Demo], "greeter")
+  val greeter = system.actorOf(Props[Demo], "1")
+  var i = 1
+  while (i < 200) {
 
-  greeter ! 1
+  }
+
 
 }
 
