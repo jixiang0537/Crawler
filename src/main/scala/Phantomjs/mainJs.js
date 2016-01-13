@@ -30,9 +30,9 @@ var ar = new Array
 
 page.onLoadFinished = function (status) {
     if(i===2){
-        fs.write("E:\\Cz\\"+num+".txt",page.content,"w")
-        console.log("页面加载成功 num ==" +num);
-        //     console.log(page.content)
+        //fs.write("E:\\Cz\\"+num+".txt",page.content,"w")
+        //console.log("页面加载成功 num ==" +num);
+             console.log(page.content)
         phantom.exit();
     }
 
@@ -56,8 +56,9 @@ page.onLoadFinished = function (status) {
         }, num);
 
     }else{
-        fs.write("E:\\Cz\\"+num+".txt",page.content,"w")
-        console.log("页面加载成功 num ==" +num);
+        //fs.write("E:\\Cz\\"+num+".txt",page.content,"w")
+        //console.log("页面加载成功 num ==" +num);
+        console.log(page.content)
         phantom.exit()
     }
     i++

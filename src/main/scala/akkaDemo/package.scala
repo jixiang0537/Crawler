@@ -1,31 +1,53 @@
 import java.io.{InputStreamReader, BufferedReader}
 import akka.actor.{Actor, Props, ActorSystem}
 import com.IClrawler.{httpCom, Units}
-import com.{runPhantom, main}
+import com.{landchinaGet, landchina, runPhantom, main}
 import org.apache.http.Header
 import org.apache.http.client.methods.{HttpGet}
 import org.apache.http.impl.client.{DefaultConnectionKeepAliveStrategy, HttpClients}
+import scala.concurrent.duration._
+
 
 /**
  * Created by dell on 2016/1/6.
  */
+//case class greet(string: String, int: Int)
+
 object CrawlerAkka extends App {
   val us = new Units
-  val baiduAr = us.setheader("www.baidu.com", "")
   val system = ActorSystem("CrawlerAkka")
-  val greeter = system.actorOf(Props[Demo], "1")
-  var i = 1
-  while (i < 200) {
+  val greeter = system.actorOf(Props[manage], "1")
+  val greet = system.actorOf(Props[manage], "overseer")
+  val task = system.actorOf(Props[manage], "task")
+ system.scheduler.schedule(0 second, 1 milliseconds, greet, ("start", 10))(system.dispatcher, task)
 
-  }
-
+  greeter ! 2
 
 }
 
-class maneg extends Actor {
-
+class manage extends Actor {
   override def receive = {
-    case (num: String) =>
+    case (uri: String, unitAr: Array[Header]) => {
+      val akkaHttp = new akkaHttp
+      akkaHttp.httpGet(uri, unitAr)
+    }
+    case x: Int => {
+      val lc = new landchina
+      val rp = new runPhantom
+     landchina.lcAr= landchina.lcAr ++ (lc jsoupParserLd (rp.runJS(x)))
+    }
+    case ("start", x: Int) => {
+      if (landchina.lcAr.size != 0) {
+        for (num <- 1 to x) {
+          context.actorOf(Props[taskWork], num.toString) ! "run"
+        }
+      }
+    }
+
+    case x: String => {
+      println("添加链接 = = =" + x);
+      landchina.lcAr ++ x
+    }
   }
 
 }
@@ -50,18 +72,12 @@ class akkaHttp extends httpCom {
   }
 }
 
-class Demo extends Actor {
+class taskWork extends Actor {
   override def receive = {
-    case (uri: String, unitAr: Array[Header]) => {
-      val akkaHttp = new akkaHttp
-      akkaHttp.httpGet(uri, unitAr)
-    }
-    case x: Int => {
-      val rp = new runPhantom
-      rp.runJS(x)
-    }
+    case "run" => println("ok")
   }
 }
+
 
 
 

@@ -1,7 +1,8 @@
 package com
 
-import java.io.File
-
+import scala.collection.mutable.ArrayBuffer
+import scala.concurrent.duration._
+import com.IClrawler.httpCom
 import org.jsoup.Jsoup
 
 import scala.io.Source
@@ -13,10 +14,12 @@ class landchina {
   def jsoupParserLd(file: String) = {
     val jp = Jsoup.parse(file)
     val linkList = jp.body().select("a[href^=default.aspx]")
-    for (i <- 0 to linkList.size() - 1) {
-      makeUriLC(linkList.get(i).toString)
+    val list = {
+      for (i <- 0 to linkList.size() - 1) yield {
+        makeUriLC(linkList.get(i).toString)
+      }
     }
-
+    list.toArray
   }
 
   def makeUriLC(link: String) = {
@@ -28,4 +31,18 @@ class landchina {
   }
 
 
+}
+
+class landchinaGet extends httpCom {
+
+}
+
+object landchina {
+  var  lcAr = scala.collection.mutable.ArrayBuffer()
+
+  def returnUri: String = {
+    val uri = lcAr(0)
+    lcAr.remove(0)
+    uri
+  }
 }
