@@ -3,6 +3,7 @@ package com.IClrawler
 import java.io.{InputStreamReader, BufferedReader}
 import java.util
 
+import com.sun.media.jfxmedia.track.Track.Encoding
 import org.apache.http.Header
 import org.apache.http.client.entity.UrlEncodedFormEntity
 import org.apache.http.client.methods.{HttpGet, HttpPost}
@@ -17,20 +18,20 @@ import scala.io.Source
 trait httpCom {
   val IHttpclient = HttpClients.custom().setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy()).build()
 
-  def httpPost(postUri: String, unitAr: Array[Header], ar: util.ArrayList[BasicNameValuePair]) = {
+  def httpPost(postUri: String, unitAr: Array[Header], ar: util.ArrayList[BasicNameValuePair],encoding:String) = {
     val hg = new HttpPost(postUri)
     hg.setHeaders(unitAr)
     hg.setEntity(new UrlEncodedFormEntity(ar, "utf-8"))
     val response = IHttpclient.execute(hg)
-    val content = Source.fromInputStream(response.getEntity.getContent, "utf-8").mkString
+    val content = Source.fromInputStream(response.getEntity.getContent, encoding).mkString
     content
   }
 
-  def httpGet(uri: String, unitAr: Array[Header]): String = {
+  def httpGet(uri: String, unitAr: Array[Header],encoding:String): String = {
     val hg = new HttpGet(uri)
     hg.setHeaders(unitAr)
     val response = IHttpclient.execute(hg)
-    val content = Source.fromInputStream(response.getEntity.getContent, "utf-8").mkString
+    val content = Source.fromInputStream(response.getEntity.getContent, encoding).mkString
     content
 
   }

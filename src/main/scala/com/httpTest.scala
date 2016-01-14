@@ -17,7 +17,7 @@ import scala.collection.mutable.ArrayBuffer
  * Created by dell on 2015/12/1.
  */
 class httpTest extends httpCom {
-  override def httpPost(postUri: String, unitAr: Array[Header], ar: util.ArrayList[BasicNameValuePair]) = {
+  override def httpPost(postUri: String, unitAr: Array[Header], ar: util.ArrayList[BasicNameValuePair],enc:String="utf-8") = {
     val hg = new HttpPost(postUri)
     hg.setHeaders(unitAr)
     hg.setEntity(new UrlEncodedFormEntity(ar, "utf-8"))
@@ -32,11 +32,11 @@ class httpTest extends httpCom {
     content.toString
   }
 
-  override def httpGet(uri: String, unitAr: Array[Header]) = {
+  override def httpGet(uri: String, unitAr: Array[Header],enc:String="utf-8") = {
     val hg = new HttpGet(uri)
     hg.setHeaders(unitAr)
     val response = Units.IHttpclient.execute(hg)
-    val br = new BufferedReader(new InputStreamReader(response.getEntity.getContent, "gb2312"), 30000)
+    val br = new BufferedReader(new InputStreamReader(response.getEntity.getContent,enc), 30000)
     val content = new StringBuilder
     while (br.readLine() != null) {
       content.append(br.readLine)

@@ -11,12 +11,25 @@ import scala.io.Source
  * Created by dell on 2016/1/12.
  */
 class landchina {
+  def returnUri: String = {
+    landchina.lcAr.size match {
+      case 0 => ""
+      case _ => {
+        val uri = landchina.lcAr(0)
+        landchina.lcAr.remove(0)
+        uri
+      }
+    }
+
+
+  }
+
   def jsoupParserLd(file: String) = {
     val jp = Jsoup.parse(file)
     val linkList = jp.body().select("a[href^=default.aspx]")
     val list = {
       for (i <- 0 to linkList.size() - 1) yield {
-        makeUriLC(linkList.get(i).toString)
+        makeUriLC(linkList.get(i).attr("href"))
       }
     }
     list.toArray
@@ -38,11 +51,7 @@ class landchinaGet extends httpCom {
 }
 
 object landchina {
-  var  lcAr = scala.collection.mutable.ArrayBuffer()
+  var lcAr = new ArrayBuffer[String]()
 
-  def returnUri: String = {
-    val uri = lcAr(0)
-    lcAr.remove(0)
-    uri
-  }
+
 }
