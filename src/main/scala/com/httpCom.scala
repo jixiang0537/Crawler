@@ -1,13 +1,15 @@
 package com.IClrawler
 
-import java.io.{InputStreamReader, BufferedReader}
+import java.io.{IOException, InputStreamReader, BufferedReader}
+import java.net.URL
 import java.util
 
-import com.sun.media.jfxmedia.track.Track.Encoding
-import org.apache.http.Header
+import Exception.WebPageGetException
+import org.apache.http.{HttpHost, Header}
+import org.apache.http.client.config.RequestConfig
 import org.apache.http.client.entity.UrlEncodedFormEntity
 import org.apache.http.client.methods.{HttpGet, HttpPost}
-import org.apache.http.impl.client.{DefaultConnectionKeepAliveStrategy, HttpClients}
+import org.apache.http.impl.client.{BasicCookieStore, DefaultConnectionKeepAliveStrategy, HttpClients}
 import org.apache.http.message.BasicNameValuePair
 
 import scala.io.Source
@@ -16,23 +18,121 @@ import scala.io.Source
  * Created by dell on 2015/12/15.
  */
 trait httpCom {
-  val IHttpclient = HttpClients.custom().setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy()).build()
 
-  def httpPost(postUri: String, unitAr: Array[Header], ar: util.ArrayList[BasicNameValuePair],encoding:String) = {
+
+  def httpPost(postUri: String, unitAr: Array[Header], ar: util.ArrayList[BasicNameValuePair], encoding: String = "utf-8"): String = {
+    val requestConfig = RequestConfig.custom().setConnectTimeout(10000).
+      setConnectionRequestTimeout(10000).setSocketTimeout(10000).build()
+    val IHttpclient = HttpClients.custom()
+      .setDefaultRequestConfig(requestConfig).build()
+
     val hg = new HttpPost(postUri)
     hg.setHeaders(unitAr)
     hg.setEntity(new UrlEncodedFormEntity(ar, "utf-8"))
-    val response = IHttpclient.execute(hg)
+
+    val response = try {
+      IHttpclient.execute(hg)
+    } catch {
+      case ex: IOException => return s"无法从  $postUri  获取响应"
+      case ex: Throwable => return "出现异常"
+    }
+    response.getStatusLine.getStatusCode match {
+      case 200 => {
+        val content = Source.fromInputStream(response.getEntity.getContent, encoding).mkString
+        content
+      }
+      case x: Int => throw new WebPageGetException(String.valueOf(x))
+    }
     val content = Source.fromInputStream(response.getEntity.getContent, encoding).mkString
     content
   }
 
-  def httpGet(uri: String, unitAr: Array[Header],encoding:String): String = {
-    val hg = new HttpGet(uri)
+  def httpPostProxy(postUri: String, unitAr: Array[Header], ar: util.ArrayList[BasicNameValuePair], encoding: String = "utf-8", Proxy: String): String = {
+    val hProxy = new HttpHost(Proxy, 80, "http");
+    val requestConfig = RequestConfig.custom().setConnectTimeout(10000).
+      setConnectionRequestTimeout(10000).setSocketTimeout(10000).setProxy(hProxy)
+      .build()
+    val IHttpclient = HttpClients.custom()
+      .setDefaultRequestConfig(requestConfig).build()
+
+    val hg = new HttpPost(postUri)
     hg.setHeaders(unitAr)
-    val response = IHttpclient.execute(hg)
+    hg.setEntity(new UrlEncodedFormEntity(ar, "utf-8"))
+
+    val response = try {
+      IHttpclient.execute(hg)
+    } catch {
+      case ex: IOException => return s"无法从  $postUri  获取响应"
+      case ex: Throwable => return "出现异常"
+    }
+    response.getStatusLine.getStatusCode match {
+      case 200 => {
+        val content = Source.fromInputStream(response.getEntity.getContent, encoding).mkString
+        content
+      }
+      case x: Int => throw new WebPageGetException(String.valueOf(x))
+    }
     val content = Source.fromInputStream(response.getEntity.getContent, encoding).mkString
     content
 
   }
+
+  def httpGet(getUri: String, unitAr: Array[Header], encoding: String = "utf-8"): String = {
+
+    val requestConfig = RequestConfig.custom().setConnectTimeout(10000).
+      setConnectionRequestTimeout(10000).setSocketTimeout(10000).build()
+    val IHttpclient = HttpClients.custom()
+    .setDefaultRequestConfig(requestConfig)
+ //   setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy())
+    .build()
+    val hg = new HttpGet(getUri)
+    val response = try {
+      IHttpclient.execute(hg)
+    } catch {
+      case ex: IOException => return s"无法从  $getUri  获取响应"
+      case ex: Throwable => return "出现异常"
+    }
+    response.getStatusLine.getStatusCode match {
+      case 200 => {
+        val content = Source.fromInputStream(response.getEntity.getContent, encoding).mkString
+        content
+      }
+      case x: Int => throw new WebPageGetException(String.valueOf(x))
+    }
+
+
+  }
+
+  def httpGetProxy(getUri: String, unitAr: Array[Header], encoding: String = "utf-8", Proxy: String): String = {
+
+    val hProxy = new HttpHost(Proxy, 80, "http");
+
+    val requestConfig = RequestConfig.custom().setConnectTimeout(10000).
+      setConnectionRequestTimeout(10000).setSocketTimeout(10000)
+      .setProxy(hProxy)
+      .build()
+
+    val IHttpclient = HttpClients.custom()
+      .setDefaultRequestConfig(requestConfig)
+      .build()
+
+    val hg = new HttpGet(getUri)
+    val response = try {
+      IHttpclient.execute(hg)
+    } catch {
+      case ex: IOException => return s"无法从  $getUri  获取响应"
+      case ex: Throwable => return "出现异常"
+    }
+    response.getStatusLine.getStatusCode match {
+      case 200 => {
+        val content = Source.fromInputStream(response.getEntity.getContent, encoding).mkString
+        content
+      }
+      case x: Int => throw new WebPageGetException(String.valueOf(x))
+    }
+
+
+  }
+
+
 }

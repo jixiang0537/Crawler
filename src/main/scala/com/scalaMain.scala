@@ -39,7 +39,6 @@ class us extends Units {
         ret(5) = new BasicHeader("Connection", "keep-Alive")
         ret(6) = new BasicHeader("Catch-Control", "no-cache")
         ret(7) = new BasicHeader("DNT", "1")
-        ret(8) = new BasicHeader("Cookie", "Hm_lvt_83853859c7247c5b03b527894622d3fa=1452585757,1452668836,1452746633,1452749005")
         ret
       }
 

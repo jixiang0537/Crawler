@@ -21,7 +21,7 @@ object CrawlerAkka extends App {
   val greet = system.actorOf(Props[manage], "overseer")
   val task = system.actorOf(Props[manage], "task")
   val enc = "gb2312"
-  system.scheduler.schedule(0 second, 1 second, greet, (enc, 5))(system.dispatcher, task)
+  system.scheduler.schedule(0 second, 1 second, greet, (enc, 10))(system.dispatcher, task)
   //  for (i <- 2 to 10)
   //    system.actorOf(Props[manage], i + "") ! i
   //}
@@ -80,7 +80,6 @@ class akkaHttp extends httpCom {
 }
 
 class taskWork extends Actor {
-
 
   override def receive = {
     case ("run", enc: String) => {
