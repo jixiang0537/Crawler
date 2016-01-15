@@ -55,7 +55,7 @@ page.onLoadFinished = function (status) {
             }
         }, num);
 
-    }else{
+    }else if(num ===1){
         //fs.write("E:\\Cz\\"+num+".txt",page.content,"w")
         //console.log("页面加载成功 num ==" +num);
         console.log(page.content)
@@ -78,8 +78,8 @@ page.onResourceReceived = function (response) {
 
 
 page.onResourceError = function (resourceError) {
-    //console.log('Error code: ' + resourceError.errorCode + '. Description: '
-    //    + resourceError.errorString);
+    console.log('Error code: ' + resourceError.errorCode + '. Description: '
+       + resourceError.errorString);
 };
 
 

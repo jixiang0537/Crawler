@@ -1,5 +1,7 @@
 package com
 
+import Exception.NullUriException
+
 import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.duration._
 import com.IClrawler.httpCom
@@ -11,18 +13,7 @@ import scala.io.Source
  * Created by dell on 2016/1/12.
  */
 class landchina {
-  def returnUri: String = {
-    landchina.lcAr.size match {
-      case 0 => ""
-      case _ => {
-        val uri = landchina.lcAr(0)
-        landchina.lcAr.remove(0)
-        uri
-      }
-    }
 
-
-  }
 
   def jsoupParserLd(file: String) = {
     val jp = Jsoup.parse(file)
@@ -51,6 +42,18 @@ class landchinaGet extends httpCom {
 }
 
 object landchina {
+  def returnUri: String = {
+    landchina.lcAr.size match {
+      case 0 => throw new NullUriException
+      case _ => {
+        val uri = landchina.lcAr(0)
+        landchina.lcAr.remove(0)
+        uri
+      }
+    }
+
+
+  }
   var lcAr = new ArrayBuffer[String]()
 
 

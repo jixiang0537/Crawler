@@ -18,7 +18,7 @@ import scala.io.Source
  * Created by cz on 2015/8/7.
  */
 class Units {
-  def setheader(host: String, referer: String): Array[Header] = {
+  def setheader(host: String, referer: String = ""): Array[Header] = {
     referer match {
       case "" => {
         val ret = new Array[Header](8)
@@ -60,6 +60,30 @@ class Units {
     val fos = new FileOutputStream(new File(FileName))
     val sToByt: Array[Byte] = s.getBytes()
     fos.write(sToByt, 0, s.length - 1)
+  }
+
+  def writeFile(content: String, name: Int) = {
+    try {
+      val directory = new File("..");
+      val path = {
+        directory.getCanonicalPath + "\\" + name+".txt"
+      }
+      val file = new File(path)
+      if (!file.exists()) {
+        file.createNewFile();
+      }
+
+      val fw = new FileWriter(file.getAbsoluteFile());
+      val bw = new BufferedWriter(fw);
+      bw.write(content);
+      bw.close();
+
+    }catch {
+      case  e:Exception =>println(e.getMessage)
+    }
+
+
+
   }
 
   def JParse(array: Array[String], str: String, int: Int) = {

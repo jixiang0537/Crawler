@@ -5,8 +5,8 @@ import com._
 import org.apache.http.Header
 import org.apache.http.client.methods.{HttpGet}
 import org.apache.http.impl.client.{DefaultConnectionKeepAliveStrategy, HttpClients}
+import org.apache.log4j.Logger
 import scala.concurrent.duration._
-import scala.util.Random
 
 
 /**
@@ -15,6 +15,7 @@ import scala.util.Random
 //case class greet(string: String, int: Int)
 
 object CrawlerAkka extends App {
+
   val us = new Units
   val system = ActorSystem("CrawlerAkka")
   val greeter = system.actorOf(Props[manage], "init")
@@ -27,6 +28,9 @@ object CrawlerAkka extends App {
   //}
   system.actorOf(Props[manage]) ! 2
   system.actorOf(Props[manage]) ! 3
+  system.actorOf(Props[manage]) ! 4
+  system.actorOf(Props[manage]) ! 5
+  system.actorOf(Props[manage]) ! 6
 
 
 }
@@ -86,10 +90,19 @@ class taskWork extends Actor {
       val us = new Units
       val lcg = new landchinaGet
       val lc = new landchina
-      println(lcg.httpGet(lc.returnUri, us.setheader("www.landchina.com", ""), enc).length)
+      val uri = landchina.returnUri
+      val fc = lcg.httpGet(uri, us.setheader("www.landchina.com", ""), enc)
+      taskWork.i += 1
+      us.writeFile(fc, taskWork.i)
 
     }
   }
+
+
+}
+
+object taskWork {
+  var i = 0
 }
 
 

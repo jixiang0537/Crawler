@@ -14,12 +14,27 @@ import org.apache.log4j.Logger;
 public class runPhantom {
     public String runJS(Integer num) {
 
-        StringBuilder conStr = new StringBuilder();
         Runtime runtime = Runtime.getRuntime();
+
         String com = "E:\\phantomjs-2.0.0-windows\\bin\\phantomjs.exe --load-images=false E:\\Cz\\ICrawler\\src\\main\\scala\\Phantomjs\\mainJs.js " + num + "";
         try {
             Process data = runtime.exec(com);
+            InputStream errInput = data.getErrorStream();
             InputStream conInput = data.getInputStream();
+            String errStr = returnCon(errInput);
+            String conStr = returnCon(conInput);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "false";
+    }
+
+    public String returnCon(InputStream conInput) {
+        try {
+            StringBuilder conStr = new StringBuilder();
+
             BufferedReader cbr = new BufferedReader(new InputStreamReader(conInput, "utf-8"));
             String clien = null;
             while ((clien = cbr.readLine()) != null) {
@@ -29,10 +44,11 @@ public class runPhantom {
             if (conStr != null) {
                 return conStr.toString();
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return "false";
+
     }
 
 }
