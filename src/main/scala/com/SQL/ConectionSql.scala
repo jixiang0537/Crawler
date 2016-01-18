@@ -6,7 +6,7 @@ package com.IClrawler.SQL
 
 import java.sql._;
 class ConectionSql {
-  def insetDataCric(ciyi: String, attribute: String, datetype: String, particular: String, data: String) {
+  def insetData(ciyi: String, attribute: String, datetype: String, particular: String, data: String) {
     try {
       val str = "insert into cric_upData (city,attribute,datetype,particular,data)values('" + ciyi + "','" + attribute + "','" + datetype + "','" + particular + "','" + data + "')"
       val ps = ConectionSql.ct.createStatement();

@@ -52,7 +52,6 @@ object landchina {
       }
     }
 
-
   }
   var lcAr = new ArrayBuffer[String]()
 

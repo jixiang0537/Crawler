@@ -134,7 +134,7 @@ class Worker(task: Cric_DataInfo, array: Array[String]) {
       Worker.i += 1
       println(cityName, cricType, taskType, taslAttribute)
       val cnsql = new ConectionSql
-      cnsql.insetDataCric(task.num_city, cricType, taskType, taslAttribute, content)
+      cnsql.insetData(task.num_city, cricType, taskType, taslAttribute, content)
     }
     //    val json = JSON.parseFull(content)
     //    json match {

@@ -22,15 +22,12 @@ object CrawlerAkka extends App {
   val greet = system.actorOf(Props[manage], "overseer")
   val task = system.actorOf(Props[manage], "task")
   val enc = "gb2312"
-  system.scheduler.schedule(0 second, 1 second, greet, (enc, 10))(system.dispatcher, task)
+  system.scheduler.schedule(0 second, 1 second, greet, (enc, 1))(system.dispatcher, task)
   //  for (i <- 2 to 10)
   //    system.actorOf(Props[manage], i + "") ! i
   //}
   system.actorOf(Props[manage]) ! 2
-  system.actorOf(Props[manage]) ! 3
-  system.actorOf(Props[manage]) ! 4
-  system.actorOf(Props[manage]) ! 5
-  system.actorOf(Props[manage]) ! 6
+
 
 
 }
@@ -90,11 +87,9 @@ class taskWork extends Actor {
       val us = new Units
       val lcg = new landchinaGet
       val lc = new landchina
-      val uri = landchina.returnUri
-      val fc = lcg.httpGet(uri, us.setheader("www.landchina.com", ""), enc)
-      taskWork.i += 1
-      us.writeFile(fc, taskWork.i)
-
+      val fc = lcg.httpGet(landchina.returnUri, us.setheader("www.landchina.com", ""), enc)
+      context.actorOf(Props[taskLCWork]) !("jP1", fc: String)
+      context.actorOf(Props[taskLCWork]) !("jP2", fc: String)
     }
   }
 
