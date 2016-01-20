@@ -12,23 +12,20 @@ import org.apache.log4j.Logger;
  * Created by dell on 2016/1/8.
  */
 public class runPhantom {
-    public String runJS(Integer num) {
+    public String runJS(String cmdStr) {
 
         Runtime runtime = Runtime.getRuntime();
 
-        String com = "E:\\phantomjs-2.0.0-windows\\bin\\phantomjs.exe --load-images=false E:\\Cz\\ICrawler\\src\\main\\scala\\Phantomjs\\mainJs.js " + num + "";
+        String com = cmdStr;//"E:\\phantomjs-2.0.0-windows\\bin\\phantomjs.exe --load-images=false E:\\Cz\\ICrawler\\src\\main\\scala\\Phantomjs\\mainJs.js " + num + "";
         try {
             Process data = runtime.exec(com);
-            InputStream errInput = data.getErrorStream();
             InputStream conInput = data.getInputStream();
-            String errStr = returnCon(errInput);
             String conStr = returnCon(conInput);
-
+          return  conStr;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            return "false";
         }
-        return "false";
     }
 
     public String returnCon(InputStream conInput) {

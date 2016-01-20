@@ -1,6 +1,8 @@
 package com
 
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Calendar
 
 import akka.actor.Actor
 import com.IClrawler.{httpTest, Units, httpCom}
@@ -15,16 +17,15 @@ import scala.io.Source
  * Created by dell on 2016/1/12.
  */
 object scalaMain {
-  def main(args: Array[String]) {
-    val st = loadFile
+  def main(args: Array[String]): Unit = {
+    val us = new Units
+    us.deteTask(2000, 2015).foreach(println(_))
 
   }
 
 
-
-
   def loadFile: String = {
-    val path = "E:\\Cz\\103.txt"
+    val path = "E:\\Cz\\1.txt"
     val str = Source.fromFile(new File(path)).mkString //getLines().foreach(println(_)))
     str
   }

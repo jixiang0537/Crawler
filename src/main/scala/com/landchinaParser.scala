@@ -1,5 +1,6 @@
 package com
 
+import Exception.{NullResponseException, NullUriException}
 import akka.actor.Actor
 import com.IClrawler.Units
 import com.SQL.{landchinaOther_Sql, landchina_Sql}
@@ -9,6 +10,28 @@ import org.jsoup.Jsoup
  * Created by dell on 2016/1/18.
  */
 class landchinaParser {
+  def mkLCPLink(date: String, num: Int = 1) = {
+    val str = "E:\\phantomjs-2.0.0-windows\\bin\\phantomjs.exe --load-images=false E:\\Cz\\ICrawler\\src\\main\\scala\\Phantomjs\\mainJs.js " + date + " " + num + ""
+    str
+  }
+
+  def analysisPageNum(num: Int) = {
+    val ar = {
+      for (i <- 1 to num) yield {
+        i
+      }
+    }
+    ar
+  }
+
+  def getLCPageNum(con: String): String = {
+    val jp = Jsoup.parse(con)
+    val r = """(?<=共)\w+(?=页)""".r
+    val content = jp.select("td[align=right]").select("td[class=pager]").text()
+    val num = r.findFirstIn(content).get
+    num
+  }
+
   def jP1(str: String) = {
     val content = Jsoup.parse(str)
     val ar = Array(
@@ -58,19 +81,28 @@ class landchinaParser {
 
 class taskLCWork extends Actor {
   override def receive = {
+    case ("dataTask", date: String) => {
+      val lp = new landchinaParser
+      val rp = new runPhantom
+      val cmdLink = lp.mkLCPLink(date)
+      rp.runJS(cmdLink) match {
+        case "false" => throw new NullResponseException(cmdLink)
+        case _ =>
+      }
+
+    }
     case ("jP1", content: String) => {
       val jp = new landchinaParser
       val lcq = new landchina_Sql
       val ar = jp.jP1(content)
-      lcq.insetData(ar(0),ar(1),ar(2),ar(3),ar(4),ar(5),ar(6),ar(7),ar(8),ar(9),ar(10),ar(11),ar(12),ar(13),ar(14),ar(15),ar(16),ar(17),ar(18),ar(19),ar(20),ar(21))
+      lcq.insetData(ar(0), ar(1), ar(2), ar(3), ar(4), ar(5), ar(6), ar(7), ar(8), ar(9), ar(10), ar(11), ar(12), ar(13), ar(14), ar(15), ar(16), ar(17), ar(18), ar(19), ar(20), ar(21))
 
     }
     case ("jP2", content: String) => {
       val jp = new landchinaParser
       val ar = jp.jP2(content)
       val lcq = new landchinaOther_Sql
-      lcq.insetData(ar(0),ar(1),ar(2),ar(3),ar(4),ar(5),ar(6),ar(7),ar(8))
-
+      lcq.insetData(ar(0), ar(1), ar(2), ar(3), ar(4), ar(5), ar(6), ar(7), ar(8))
 
     }
   }

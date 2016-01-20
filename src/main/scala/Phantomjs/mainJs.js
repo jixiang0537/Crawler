@@ -17,7 +17,8 @@ var receive_response_count_last = 0;
 var receive_response_fail_count = 0;
 // 爬虫开始爬的起始路径
 
-var root_url = 'http://www.landchina.com/default.aspx?tabid=263';
+var root_url = '.' +
+    '';
 
 
 //启动周期检查有无回应
@@ -55,7 +56,7 @@ page.onLoadFinished = function (status) {
             }
         }, num);
 
-    }else if(num ===1){
+    }else if(num ==1){
         //fs.write("E:\\Cz\\"+num+".txt",page.content,"w")
         //console.log("页面加载成功 num ==" +num);
         console.log(page.content)
@@ -78,8 +79,8 @@ page.onResourceReceived = function (response) {
 
 
 page.onResourceError = function (resourceError) {
-    console.log('Error code: ' + resourceError.errorCode + '. Description: '
-       + resourceError.errorString);
+    //console.log('Error code: ' + resourceError.errorCode + '. Description: '
+    //   + resourceError.errorString);
 };
 
 

@@ -1,6 +1,8 @@
 package com.IClrawler
 
 import java.io._
+import java.text.SimpleDateFormat
+import java.util.Calendar
 
 
 import com.IClrawler.SQL.NBS_ConnectSql
@@ -11,6 +13,7 @@ import net.sf.json.{JSONObject, JSONArray}
 import org.apache.http.Header
 import org.apache.http.impl.client.{DefaultConnectionKeepAliveStrategy, HttpClients}
 import org.apache.http.message.BasicHeader
+import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
 
 
@@ -18,6 +21,37 @@ import scala.io.Source
  * Created by cz on 2015/8/7.
  */
 class Units {
+
+  def deteTask(sDate: Int, eDate: Int):Array[String] = {
+    var year = sDate
+    val sdf = new SimpleDateFormat("yyyy-MM-dd");
+    val ar = new ArrayBuffer[String]();
+    //月份计数
+    val cal = Calendar.getInstance(); //获得当前日期对象
+    cal.clear();
+    for (ye <- sDate to eDate)  {
+      for (month <- 1 to 12)  {
+        //清除信息
+        cal.set(Calendar.YEAR, ye);
+        cal.set(Calendar.MONTH, month - 1); //1月从0开始
+        cal.set(Calendar.DAY_OF_MONTH, 1); //设置为1号,当前日期既为本月第一天
+        ar +=   sdf.format(cal.getTime())
+        val count = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+        //   System.out.println( count);
+
+        for (i <- 0 to count - 2) {
+          cal.add(Calendar.DAY_OF_MONTH, +1);
+          ar += sdf.format(cal.getTime()).toString
+        }
+      }
+//      m = 1
+//      year += 1;
+    }
+
+    ar.toArray[String]
+  }
+
   def setheader(host: String, referer: String = ""): Array[Header] = {
     referer match {
       case "" => {
@@ -66,7 +100,7 @@ class Units {
     try {
       val directory = new File("..");
       val path = {
-        directory.getCanonicalPath + "\\" + name+".txt"
+        directory.getCanonicalPath + "\\" + name + ".txt"
       }
       val file = new File(path)
       if (!file.exists()) {
@@ -78,10 +112,9 @@ class Units {
       bw.write(content);
       bw.close();
 
-    }catch {
-      case  e:Exception =>println(e.getMessage)
+    } catch {
+      case e: Exception => println(e.getMessage)
     }
-
 
 
   }

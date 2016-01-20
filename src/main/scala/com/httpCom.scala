@@ -4,7 +4,7 @@ import java.io.{IOException, InputStreamReader, BufferedReader}
 import java.net.URL
 import java.util
 
-import Exception.WebPageGetException
+import Exception.{NullResponseException, WebPageGetException}
 import org.apache.http.{HttpHost, Header}
 import org.apache.http.client.config.RequestConfig
 import org.apache.http.client.entity.UrlEncodedFormEntity
@@ -94,8 +94,12 @@ trait httpCom {
     }
     response.getStatusLine.getStatusCode match {
       case 200 => {
-        val content = Source.fromInputStream(response.getEntity.getContent, encoding).mkString
-        content
+        val content = try {
+          Source.fromInputStream(response.getEntity.getContent, encoding).mkString
+        }catch {
+          case ex :Exception => throw new NullResponseException(getUri)
+        }
+        content.toString
       }
       case x: Int => throw new WebPageGetException(String.valueOf(x))
     }
@@ -103,9 +107,9 @@ trait httpCom {
 
   }
 
-  def httpGetProxy(getUri: String, unitAr: Array[Header], encoding: String = "utf-8", Proxy: String): String = {
+  def httpGetProxy(getUri: String, unitAr: Array[Header], encoding: String = "utf-8", Proxy: String,port:Int=80): String = {
 
-    val hProxy = new HttpHost(Proxy, 80, "http");
+    val hProxy = new HttpHost(Proxy, port, "http");
 
     val requestConfig = RequestConfig.custom().setConnectTimeout(10000).
       setConnectionRequestTimeout(10000).setSocketTimeout(10000)

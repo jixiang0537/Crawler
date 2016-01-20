@@ -22,11 +22,9 @@ object CrawlerAkka extends App {
   val greet = system.actorOf(Props[manage], "overseer")
   val task = system.actorOf(Props[manage], "task")
   val enc = "gb2312"
-  system.scheduler.schedule(0 second, 1 second, greet, (enc, 1))(system.dispatcher, task)
-  //  for (i <- 2 to 10)
-  //    system.actorOf(Props[manage], i + "") ! i
-  //}
-  system.actorOf(Props[manage]) ! 2
+  system.scheduler.schedule(0 second, 5 second, greet, (enc, 1))(system.dispatcher, task)
+      system.actorOf(Props[manage]) ! ("start",1995,2000)
+
 
 
 
@@ -38,12 +36,20 @@ class manage extends Actor {
     //      val akkaHttp = new akkaHttp
     //      akkaHttp.httpGet(uri, unitAr,)
     //    }
-    case x: Int => {
+    case ("start",x:Int,y:Int) => {
+      val us = new Units
+      val dataAr= us.deteTask(x,y)
+      for(i<- 0 until(dataAr.length)) context.actorOf(Props[taskWork]) ! ("dataTask" ,dataAr(i))
+
+
+    }
+      case x: Int => {
       val lc = new landchina
       val rp = new runPhantom
-      landchina.lcAr ++= (lc jsoupParserLd (rp.runJS(x)))
+    //  landchina.lcAr ++= (lc jsoupParserLd (rp.runJS(x)))
     }
     case (enc: String, x: Int) => {
+      println(landchina.lcAr.size)
       if (landchina.lcAr.size != 0) {
         for (num <- 1 to x) {
           context.actorOf(Props[taskWork]) !("run", enc)
@@ -95,12 +101,6 @@ class taskWork extends Actor {
 
 
 }
-
-object taskWork {
-  var i = 0
-}
-
-
 
 
 

@@ -53,7 +53,23 @@ object landchina {
     }
 
   }
+
+  def returnErrUri: String = {
+    landchina.lcErrAr.size match {
+      case 0 => throw new NullUriException
+      case _ => {
+        val uri = landchina.lcErrAr(0)
+        landchina.lcErrAr.remove(0)
+        uri
+      }
+    }
+
+  }
+
   var lcAr = new ArrayBuffer[String]()
+
+  var lcErrAr = new ArrayBuffer[String]()
 
 
 }
+
