@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 
 import akka.actor.Actor
+import com.IClrawler.Manage.NBS_Task
 import com.IClrawler.{httpTest, Units, httpCom}
 import org.apache.http.Header
 import org.apache.http.message.BasicHeader
@@ -18,8 +19,8 @@ import scala.io.Source
  */
 object scalaMain {
   def main(args: Array[String]): Unit = {
-    val us = new Units
-    us.deteTask(2000, 2015).foreach(println(_))
+val nbsT = new NBS_Task
+    nbsT.monthTask("201512","201512")
 
   }
 

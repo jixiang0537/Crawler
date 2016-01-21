@@ -1,8 +1,7 @@
 package com
 
 import Exception.{NullResponseException, NullUriException}
-import akka.actor.Actor
-import com.IClrawler.Units
+import akka.actor.{Props, Actor}
 import com.SQL.{landchinaOther_Sql, landchina_Sql}
 import org.jsoup.Jsoup
 
@@ -85,9 +84,24 @@ class taskLCWork extends Actor {
       val lp = new landchinaParser
       val rp = new runPhantom
       val cmdLink = lp.mkLCPLink(date)
-      rp.runJS(cmdLink) match {
+      val content = rp.runJS(cmdLink)
+      content match {
         case "false" => throw new NullResponseException(cmdLink)
-        case _ =>
+        case con:String => {
+          lp.getLCPageNum(con) match {
+            case "1" => {
+              context.actorOf(Props[taskLCWork])
+
+            }
+            case x: String => {
+              for (i <- 0 to x.toInt) {
+                lp.mkLCPLink(date, x.toInt)
+
+              }
+            }
+          }
+
+        }
       }
 
     }

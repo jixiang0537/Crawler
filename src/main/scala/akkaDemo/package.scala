@@ -89,6 +89,7 @@ class akkaHttp extends httpCom {
 class taskWork extends Actor {
 
   override def receive = {
+
     case ("run", enc: String) => {
       val us = new Units
       val lcg = new landchinaGet
@@ -96,6 +97,7 @@ class taskWork extends Actor {
       val fc = lcg.httpGet(landchina.returnUri, us.setheader("www.landchina.com", ""), enc)
       context.actorOf(Props[taskLCWork]) !("jP1", fc: String)
       context.actorOf(Props[taskLCWork]) !("jP2", fc: String)
+
     }
   }
 
