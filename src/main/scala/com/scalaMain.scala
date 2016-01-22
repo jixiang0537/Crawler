@@ -6,6 +6,7 @@ import java.util.Calendar
 
 import akka.actor.Actor
 import com.IClrawler.Manage.NBS_Task
+import com.IClrawler.TaskWork.{NationalData_WkOther, NationalData_Worker2}
 import com.IClrawler.{httpTest, Units, httpCom}
 import org.apache.http.Header
 import org.apache.http.message.BasicHeader
@@ -19,18 +20,16 @@ import scala.io.Source
  */
 object scalaMain {
   def main(args: Array[String]): Unit = {
-val nbsT = new NBS_Task
-    nbsT.monthTask("201512","201512")
+    val nbs = new NBS_Task
+    nbs.monthTask("201511","201511")
 
   }
-
 
   def loadFile: String = {
     val path = "E:\\Cz\\1.txt"
     val str = Source.fromFile(new File(path)).mkString //getLines().foreach(println(_)))
     str
   }
-
 
 }
 

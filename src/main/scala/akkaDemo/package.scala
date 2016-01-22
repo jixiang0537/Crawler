@@ -91,6 +91,7 @@ class taskWork extends Actor {
   override def receive = {
 
     case ("run", enc: String) => {
+      //对landchina数据进行模块化 分为1 2两张表 根据编号
       val us = new Units
       val lcg = new landchinaGet
       val lc = new landchina

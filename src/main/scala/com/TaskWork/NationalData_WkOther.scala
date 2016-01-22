@@ -16,9 +16,9 @@ import scala.util.Random
  * Created by dell on 2015/11/11.
  */
 class NationalData_WkOther {
-  var uri = "http://data.stats.gov.cn/easyquery.htm?cn=E0103"
+  var uri = "http://data.stats.gov.cn/easyquery.htm?cn=E0101"
   val postUri = "http://data.stats.gov.cn/easyquery.htm"
-  var dbcode = "fsnd"
+  var dbcode = "fsyd"
   var wdcode = "zb"
   var rowcode = "zb"
   val unit = new Units
@@ -162,8 +162,8 @@ def makeTaks ={
       if (jobj.get("hasdata").toString == "true") {
         val ar = JSONArray.fromObject(jars.get("wds"))
         //土地为1 分类年月度为0
-        NationalData_WkOther.array(1) = NationalData_WkOther.cityMap.get(JSONObject.fromObject(ar.get(1)).get("valuecode").toString).get
-        //NationalData_WkOther.array(1) = NationalData_WkOther.Map.get(JSONObject.fromObject(ar.get(0)).get("valuecode").toString).get
+      // NationalData_WkOther.array(1) = NationalData_WkOther.cityMap.get(JSONObject.fromObject(ar.get(1)).get("valuecode").toString).get
+        NationalData_WkOther.array(1) = NationalData_WkOther.cityMap.get(JSONObject.fromObject(ar.get(0)).get("valuecode").toString).get
 
 
         NationalData_WkOther.array(4) = JSONObject.fromObject(ar.get(2)).get("valuecode").toString
@@ -184,7 +184,7 @@ def makeTaks ={
 
   def addSql() = {
     val csql = new NBS_ConnectSql
-    csql.insetDataCric(NationalData_WkOther.array(0), NationalData_WkOther.array(1), NationalData_WkOther.array(2), NationalData_WkOther.array(3), NationalData_WkOther.array(4), NationalData_WkOther.array(5))
+  //  csql.insetData(NationalData_WkOther.array)
   }
 
 

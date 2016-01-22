@@ -17,18 +17,30 @@ import scala.util.Random
  * Created by dell on 2015/11/11.
  */
 class NationalData_Worker2 {
-  var uri = "http://data.stats.gov.cn/easyquery.htm?cn=C01"
+  var uri = "http://data.stats.gov.cn/easyquery.htm?cn=A01"
   val postUri = "http://data.stats.gov.cn/easyquery.htm"
-  var dbcode = "hgnd"
+  var dbcode = "hgyd"
   var wdcode = "zb"
   var rowcode = "zb"
   var dfwds = "[{\"wdcode\":\"reg\",\"valuecode\":\"800001\"}]"
+
+  def monthInfo: Unit ={
+    var uri = "http://data.stats.gov.cn/easyquery.htm?cn=A01"
+    val postUri = "http://data.stats.gov.cn/easyquery.htm"
+    var dbcode = "hgyd"
+    var wdcode = "zb"
+    var rowcode = "zb"
+    var dfwds = "[{\"wdcode\":\"reg\",\"valuecode\":\"800001\"}]"
+
+  }
+
+
   val unit = new Units
 
   def httpCookie = {
     val hg = new HttpGet("http://data.stats.gov.cn/easyquery.htm?cn=A01")
     val unit = new Units
-    hg.setHeaders(unit.setheader("data.stats.gov.cn",uri))
+    hg.setHeaders(unit.setheader("data.stats.gov.cn", uri))
 
     val response = Units.IHttpclient.execute(hg)
     NationalData_Work.yzma = response.getFirstHeader("Set-Cookie").toString
@@ -37,7 +49,7 @@ class NationalData_Worker2 {
   def firstHttpGet(string: String) = {
     val hg = new HttpGet(string)
     val unit = new Units
-    hg.setHeaders(unit.setheader("data.stats.gov.cn",uri))
+    hg.setHeaders(unit.setheader("data.stats.gov.cn", uri))
 
     hg.setHeader("Cookie", NationalData_Work.yzma.split(":")(1))
     val response = Units.IHttpclient.execute(hg)
@@ -46,9 +58,9 @@ class NationalData_Worker2 {
 
   }
 
-  def HttpPost(id: String): Unit = {
+  def HttpPost(id: String="zb"): Unit = {
     val hg = new HttpPost(postUri)
-    hg.setHeaders(unit.setheader("data.stats.gov.cn",uri))
+    hg.setHeaders(unit.setheader("data.stats.gov.cn", uri))
     hg.setHeader("Cookie", NationalData_Work.yzma.split(":")(1))
 
     val ar = new util.ArrayList[BasicNameValuePair]
@@ -70,12 +82,12 @@ class NationalData_Worker2 {
     for (i <- 0 to jar.size - 1) {
       val job = JSONObject.fromObject(jar.get(i))
       if (job.get("isParent").toString == "true") {
-        NationalData_WkOther.map.+=((job.get("id").toString, job.get("name").toString))
+        NationalData_Worker2.map.+=((job.get("id").toString, job.get("name").toString))
         HttpPost(job.get("id").toString)
       } else {
-        NationalData_WkOther.array(2) = NationalData_WkOther.map.get(job.get("pid").toString).get
-        NationalData_WkOther.map.+=((job.get("id").toString, job.get("name").toString));
-        NationalData_WkOther.array(0) = job.get("name").toString;
+        NationalData_Worker2.array(2) = NationalData_Worker2.map.get(job.get("pid").toString).get
+        NationalData_Worker2.map.+=((job.get("id").toString, job.get("name").toString));
+        NationalData_Worker2.array(0) = job.get("name").toString;
         HttpGet(job.get("id").toString)
       }
       //      println(job.get("id"))
@@ -86,7 +98,7 @@ class NationalData_Worker2 {
 
   def HttpGet(str: String): Unit = {
     val hg = new HttpGet(makeUri(str))
-    hg.setHeaders(unit.setheader("data.stats.gov.cn",uri))
+    hg.setHeaders(unit.setheader("data.stats.gov.cn", uri))
     hg.setHeader("Referer", uri)
     hg.setHeader("DNT", "1")
     hg.setHeader("Cookie", NationalData_Work.yzma.split(":")(1))
@@ -107,7 +119,7 @@ class NationalData_Worker2 {
       val zbsi = zbs.get(i)
       println("ID:" + JSONObject.fromObject(zbsi).get("code"))
       println("标签:" + JSONObject.fromObject(zbsi).get("name"))
-      NationalData_WkOther.map.+=((JSONObject.fromObject(zbsi).get("code").toString, makeTag(JSONObject.fromObject(zbsi).get("name") toString, JSONObject.fromObject(zbsi).get("unit").toString)
+      NationalData_Worker2.map.+=((JSONObject.fromObject(zbsi).get("code").toString, makeTag(JSONObject.fromObject(zbsi).get("name") toString, JSONObject.fromObject(zbsi).get("unit").toString)
         ))
     }
 
@@ -121,10 +133,10 @@ class NationalData_Worker2 {
       val jobj = JSONObject.fromObject(jars.get("data"))
       if (jobj.get("hasdata").toString == "true") {
         val ar = JSONArray.fromObject(jars.get("wds"))
-        NationalData_WkOther.array(1) = NationalData_WkOther.map.get(JSONObject.fromObject(ar.get(0)).get("valuecode").toString).get
-        NationalData_WkOther.array(3) = JSONObject.fromObject(ar.get(1)).get("valuecode").toString
-        NationalData_WkOther.array(4) = jobj.get("strdata").toString
-        addSql()
+        NationalData_Worker2.array(1) = NationalData_Worker2.map.get(JSONObject.fromObject(ar.get(0)).get("valuecode").toString).get
+        NationalData_Worker2.array(3) = JSONObject.fromObject(ar.get(1)).get("valuecode").toString
+        NationalData_Worker2.array(4) = jobj.get("strdata").toString
+        addSql(NationalData_Worker2.dataType)
         //       print("ID: " + JSONObject.fromObject(ar.get(0)).get("valuecode"))
         //        print("时间: " + JSONObject.fromObject(ar.get(1)).get("valuecode"))
         //        println("数据:" + jobj.get("strdata"))
@@ -142,9 +154,8 @@ class NationalData_Worker2 {
     }
   }
 
-  def addSql() = {
-    val csql = new NBS_ConnectSql
-    csql.insetDataCric(NationalData_WkOther.array(0), NationalData_WkOther.array(1), NationalData_WkOther.array(2), NationalData_WkOther.array(3), NationalData_WkOther.array(4),NationalData_WkOther.array(5))
+  def addSql(date:String) = {
+    NBS_ConnectSql (date,NationalData_Worker2.array)
 
   }
 
