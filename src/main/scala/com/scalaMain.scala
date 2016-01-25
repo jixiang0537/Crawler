@@ -21,8 +21,7 @@ import scala.io.Source
 object scalaMain {
   def main(args: Array[String]): Unit = {
     val nbs = new NBS_Task
-    nbs.monthTask("201511","201511")
-
+    nbs.NBS_Task1
   }
 
   def loadFile: String = {

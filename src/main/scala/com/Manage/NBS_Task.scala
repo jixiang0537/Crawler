@@ -4,7 +4,7 @@ import java.util
 
 import com.IClrawler.TaskInfo.NBS_TaskLink
 import com.IClrawler.TaskWork.{NationalData_Worker2, NationalData_WkOther, NationalData_Work}
-import com.IClrawler.{Units, httpTest}
+import com.IClrawler.{httpCom, Units, httpTest}
 import org.apache.http.message.BasicNameValuePair
 
 /**
@@ -47,8 +47,8 @@ class NBS_Task {
 
   def monthTask(sDate: String, eDate: String) = {
     val nW2 = new NationalData_Worker2
-    val dateType ="月度数据"
-    NationalData_Worker2.dataType=dateType
+    val dateType = "月度数据"
+    NationalData_Worker2.dataType = dateType
     nw2.uri = "http://data.stats.gov.cn/easyquery.htm?cn=A01"
     nw2.dbcode = "hgyd"
     nw2.httpCookie
@@ -63,21 +63,23 @@ class NBS_Task {
   }
 
   def NBS_Task1 = {
-    val uArOther = us.setheader("data.stats.gov.cn", "http://data.stats.gov.cn/easyquery.htm?cn=E0101")
-
-    var str2 = ""
+    val us = new Units
+    val uArOther = us.setheader("data.stats.gov.cn")
     val nw = new NationalData_WkOther
     NationalData_WkOther.map += (("", "null"))
     nw.dbcode = "fsyd"
+      //nw.rowcode= "reg"
     nw.httpCookie
     val str = "http://data.stats.gov.cn/easyquery.htm?m=getOtherWds&dbcode=fsyd&rowcode=reg&colcode=sj&wds=%5B%5D"
-    val ht = new httpTest
-    ht.httpGet(str, uAr,"gb2312")
+    val cityStr = "http://data.stats.gov.cn/easyquery.htm?m=getOtherWds&dbcode=fsyd&rowcode=zb&colcode=sj&wds=%5B%5D"
+    val ht = new NBS_HttpReq
+    val cityTag = ht.httpGet(cityStr, uArOther)
     println("分类标签已获取")
-    str2 = ht.httpGet(str, uArOther)
+    val tagStr = ht.httpGet(str, uArOther)
     NationalData_WkOther.dataType = "分省月度数据"
-    nw.firstHttpGet("http://data.stats.gov.cn/easyquery.htm?m=QueryData&dbcode=fsyd&rowcode=reg&colcode=sj&wds=%5B%7B%22wdcode%22%3A%22zb%22%2C%22valuecode%22%3A%22A020101%22%7D%5D&dfwds=%5B%7B%22wdcode%22%3A%22sj%22%2C%22valuecode%22%3A%22201511%22%7D%5D")
-    nw.addClassifyId(str2)
+    nw.firstHttpGet("http://data.stats.gov.cn/easyquery.htm?m=QueryData&dbcode=fsyd&rowcode=reg&colcode=sj&wds=%5B%7B%22wdcode%22%3A%22zb%22%2C%22valuecode%22%3A%22A020101%22%7D%5D&dfwds=%5B%7B%22wdcode%22%3A%22sj%22%2C%22valuecode%22%3A%22201511-201512%22%7D%5D")
+    nw.addClassifyId(tagStr)
+    nw.addClassifyId2(cityTag)
     nw.Jparse2(nw.HttpPost())
 
     nw.Jparse(nw.HttpPost("A01"))
@@ -121,7 +123,7 @@ class NBS_Task {
     nw.uri = "http://data.stats.gov.cn/easyquery.htm?cn=E0101"
     nw.httpCookie
     val str = s"http://data.stats.gov.cn/easyquery.htm?m=getOtherWds&dbcode=$taskType&rowcode=reg&colcode=sj&wds=%5B%5D"
-   // nw.nw.HttpPost("A01")
+    // nw.nw.HttpPost("A01")
 
 
 
@@ -129,9 +131,11 @@ class NBS_Task {
     NationalData_WkOther.dataType = "主要城市月度价格"
     nw.firstHttpGet("http://data.stats.gov.cn/easyquery.htm?m=QueryData&dbcode=csyd&rowcode=reg&colcode=sj&wds=%5B%7B%22wdcode%22%3A%22zb%22%2C%22valuecode%22%3A%22A01010102%22%7D%5D&dfwds=%5B%7B%22wdcode%22%3A%22sj%22%2C%22valuecode%22%3A%22201512-201512%22%7D%5D")
     //nw.addClassifyId(ht.httpGet(str, uAr))
-   // nw.addClassifyId2(ht.httpGet(str3, uAr))
+    // nw.addClassifyId2(ht.httpGet(str3, uAr))
     nw.Jparse2(nw.HttpPost("reg"))
     nw.Jparse(nw.HttpPost("reg"))
 
   }
 }
+
+class NBS_HttpReq extends httpCom {}
