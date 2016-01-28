@@ -8,7 +8,7 @@ import java.sql._;
 class ConectionSql {
   def insetData(ciyi: String, attribute: String, datetype: String, particular: String, data: String) {
     try {
-      val str = "insert into cric_upData (city,attribute,datetype,particular,data)values('" + ciyi + "','" + attribute + "','" + datetype + "','" + particular + "','" + data + "')"
+      val str = "insert into cric_upData20160128 (city,attribute,datetype,particular,data)values('" + ciyi + "','" + attribute + "','" + datetype + "','" + particular + "','" + data + "')"
       val ps = ConectionSql.ct.createStatement();
       val rs = ps.executeUpdate(str);
       println(ciyi, attribute, datetype, particular + "插入成功")

@@ -47,7 +47,6 @@ class NationalData_WkOther {
     val response = Units.IHttpclient.execute(hg)
     val content = Source.fromInputStream(response.getEntity.getContent, "utf-8").mkString
     Thread.sleep(new Random(6000).nextInt(10000))
-
   }
 
   def HttpPost(id: String = "zb"): String = {
@@ -105,6 +104,7 @@ class NationalData_WkOther {
   def addClassifyId(string: String) = {
     val jo = JSONObject.fromObject(string).get("returndata")
     val jc = JSONArray.fromObject(jo).get(0)
+
     val jd = JSONObject.fromObject(jc).get("nodes")
     val je = JSONArray.fromObject(jd)
     for (i <- 0 to je.size - 1) {
@@ -172,8 +172,6 @@ class NationalData_WkOther {
         val valStr = JSONObject.fromObject(ar.get(0)).get("valuecode").toString
         println(valStr)
         NationalData_WkOther.array(1) = NationalData_WkOther.cityMap.get(valStr).get
-
-
         NationalData_WkOther.array(4) = JSONObject.fromObject(ar.get(2)).get("valuecode").toString
         NationalData_WkOther.array(5) = jobj.get("strdata").toString
         addSql()
@@ -196,7 +194,7 @@ class NationalData_WkOther {
 
 
   def makeUri(cid: String, id: String) = {
-      val uri = "http://data.stats.gov.cn/easyquery.htm?m=QueryData&dbcode="+dbcode+"&rowcode="+rowcode+"&colcode=sj&wds=%5B%7B%22wdcode%22%3A%22zb%22%2C%22valuecode%22%3A%22" + cid + "%22%7D%5D&dfwds=%5B%7B%22wdcode%22%3A%22reg%22%2C%22valuecode%22%3A%22" + id + "%22%7D%5D"
+      val uri = "http://data.stats.gov.cn/easyquery.htm?m=QueryData&dbcode="+dbcode+"&rowcode="+rowcode+"&colcode=sj&wds=%5B%7B%22wdcode%22%3A%22reg%22%2C%22valuecode%22%3A%22" + cid + "%22%7D%5D&dfwds=%5B%7B%22wdcode%22%3A%22zb%22%2C%22valuecode%22%3A%22" + id + "%22%7D%5D"
     //val uri = "http://data.stats.gov.cn/easyquery.htm?m=QueryData&dbcode=" + dbcode + "&rowcode=" + rowcode + "&colcode=sj&wds=%5B%7B%22wdcode%22%3A%22zb%22%2C%22valuecode%22%3A%22" + cid + "%22%7D%5D&dfwds=%5B%5d"
     // "http://data.stats.gov.cn/easyquery.htm?m=QueryData&dbcode=fsyd&rowcode=zb&colcode=sj&wds=%5B%7B%22wdcode%22%3A%22reg%22%2C%22valuecode%22%3A%22130000%22%7D%5D&dfwds=%5B%5D"
     uri

@@ -1,11 +1,8 @@
 package com.IClrawler.Manage
 
-import java.util
 
-import com.IClrawler.TaskInfo.NBS_TaskLink
 import com.IClrawler.TaskWork.{NationalData_Worker2, NationalData_WkOther, NationalData_Work}
 import com.IClrawler.{httpCom, Units, httpTest}
-import org.apache.http.message.BasicNameValuePair
 
 /**
  * Created by dell on 2015/11/3.
@@ -70,16 +67,16 @@ class NBS_Task {
     nw.dbcode = "fsyd"
       //nw.rowcode= "reg"
     nw.httpCookie
-    val str = "http://data.stats.gov.cn/easyquery.htm?m=getOtherWds&dbcode=fsyd&rowcode=reg&colcode=sj&wds=%5B%5D"
+    val str =      "http://data.stats.gov.cn/easyquery.htm?m=getOtherWds&dbcode=fsyd&rowcode=reg&colcode=sj&wds=%5B%5D"
     val cityStr = "http://data.stats.gov.cn/easyquery.htm?m=getOtherWds&dbcode=fsyd&rowcode=zb&colcode=sj&wds=%5B%5D"
     val ht = new NBS_HttpReq
     val cityTag = ht.httpGet(cityStr, uArOther)
     println("分类标签已获取")
     val tagStr = ht.httpGet(str, uArOther)
     NationalData_WkOther.dataType = "分省月度数据"
-    nw.firstHttpGet("http://data.stats.gov.cn/easyquery.htm?m=QueryData&dbcode=fsyd&rowcode=reg&colcode=sj&wds=%5B%7B%22wdcode%22%3A%22zb%22%2C%22valuecode%22%3A%22A020101%22%7D%5D&dfwds=%5B%7B%22wdcode%22%3A%22sj%22%2C%22valuecode%22%3A%22201511-201512%22%7D%5D")
-    nw.addClassifyId(tagStr)
-    nw.addClassifyId2(cityTag)
+    nw.firstHttpGet("http://data.stats.gov.cn/easyquery.htm?m=QueryData&dbcode=fsyd&rowcode=zb&colcode=sj&wds=%5B%7B%22wdcode%22%3A%22zb%22%2C%22valuecode%22%3A%22A020101%22%7D%5D&dfwds=%5B%7B%22wdcode%22%3A%22sj%22%2C%22valuecode%22%3A%22201511-201512%22%7D%5D")
+    nw.addClassifyId(cityTag)
+    nw.addClassifyId2(tagStr)
     nw.Jparse2(nw.HttpPost())
 
     nw.Jparse(nw.HttpPost("A01"))

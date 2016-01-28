@@ -5,6 +5,7 @@ import java.util
 import com.IClrawler.Manage.Cric_Task
 import com.IClrawler.SQL.ConectionSql
 import com.IClrawler.TaskInfo.Cric_DataInfo
+import net.sf.json.JSONObject
 import org.apache.http.client.config.RequestConfig
 import org.apache.http.client.entity.UrlEncodedFormEntity
 import org.apache.http.client.methods.HttpPost
@@ -13,11 +14,13 @@ import org.apache.http.message.BasicNameValuePair
 
 import scala.io.Source
 import scala.util.Random
+import scala.util.matching.Regex.Match
 
 /**
  * Created by dell on 2015/10/15.
  */
-class Cric_HongGuan(task: Cric_DataInfo, array: Array[String]) {
+class Cric_HongGuan(task: Cric_DataInfo, array: Array[String], currentPage: Int = 1) {
+  private var pageNum = currentPage
   val IHttpclient = HttpClients.createDefault()
   val requestConfig = RequestConfig.custom().setSocketTimeout(30000).setConnectTimeout(30000).build();
   //设置请求和传输超时时间
@@ -28,7 +31,6 @@ class Cric_HongGuan(task: Cric_DataInfo, array: Array[String]) {
     val cricType = array(0);
     val taskType = array(1);
     val taslAttribute = array(3);
-
     val cityName = task.num_city
     val key: String = array(2)
     val dateType = array(3)
@@ -57,30 +59,64 @@ class Cric_HongGuan(task: Cric_DataInfo, array: Array[String]) {
     ar.add(new BasicNameValuePair("dateZ", dateZ))
 
     ar.add(new BasicNameValuePair("hascity", "0"))
-    ar.add(new BasicNameValuePair("currentPage", "1"))
+    ar.add(new BasicNameValuePair("currentPage", currentPage.toString))
     ar.add(new BasicNameValuePair("displaySize", "10"))
     //   if (array.length >= 2) ar.add(new BasicNameValuePair("MdxSource", mdxSource))
     httppost.setEntity(new UrlEncodedFormEntity(ar, "utf-8"))
     Worker.o += 1
     val response = IHttpclient.execute(httppost)
-    val content = Source.fromInputStream(response.getEntity.getContent,"utf-8").mkString
+    val content = Source.fromInputStream(response.getEntity.getContent, "utf-8").mkString
     println(content)
+
+
     if (content.length > 0) {
       Worker.i += 1
       println(cityName, cricType, taskType, taslAttribute)
       val cnsql = new ConectionSql
       cnsql.insetData(task.num_city, cricType, taskType, taslAttribute, content)
     }
+    Cric_HongGuan.hgCricJP(content) match {
+      case true =>
+        pageNum += 1
+        Thread.sleep(new Random(10000).nextInt(25000));
+        new Cric_HongGuan(task, array, pageNum)
+      case _ =>
+    }
 
   } catch {
-    case ex: Exception => print(ex.getMessage + "出现异常"); Worker.retry += 1; if (Worker.retry % 3 != 0) {println("重试当前连接"+task.num_city+array(2)+array(3)+array(4));Thread.sleep(new Random(4000).nextInt(6000));new Cric_HongGuan(task, array)}
-    else {
-      println("失败次数过多丢弃当前连接")
-    }
+    case ex: Exception => print(ex.getMessage + "出现异常");
+      Worker.retry += 1;
+      if (Worker.retry % 3 != 0) {
+        println("重试当前连接" + task.num_city + array(2) + array(3) + array(4));
+        Thread.sleep(new Random(4000).nextInt(6000));
+        new Cric_HongGuan(task, array, currentPage)
+      }
+      else {
+        println("失败次数过多丢弃当前连接")
+      }
   }
   println("")
-  Thread.sleep(new Random(4000).nextInt(6000))
-  if (Worker.o % 3 == 0) Thread.sleep(new Random(500).nextInt(5000))
+
+  Thread.sleep(new Random(6000).nextInt(8000))
+  if (Worker.o % 3 == 0) Thread.sleep(new Random(500).nextInt(10000))
 
 
 }
+
+object Cric_HongGuan {
+  def hgCricJP(string: String) = {
+    val jo = JSONObject.fromObject(string).get("pageModel")
+    val jo1 = JSONObject.fromObject(jo).get("currentPage")
+    val jo2 = JSONObject.fromObject(jo).get("dataCount")
+    val bl = {
+      if (jo1.toString < jo2.toString) {
+        true
+      } else {
+        false
+      }
+    }
+    bl
+  }
+
+}
+

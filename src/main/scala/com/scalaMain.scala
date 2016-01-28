@@ -5,9 +5,10 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 
 import akka.actor.Actor
-import com.IClrawler.Manage.NBS_Task
+import com.IClrawler.Manage.{Cric_Task, NBS_Task}
 import com.IClrawler.TaskWork.{NationalData_WkOther, NationalData_Worker2}
 import com.IClrawler.{httpTest, Units, httpCom}
+import net.sf.json.{JSONObject, JSON}
 import org.apache.http.Header
 import org.apache.http.message.BasicHeader
 import org.jsoup.Jsoup
@@ -20,8 +21,12 @@ import scala.io.Source
  */
 object scalaMain {
   def main(args: Array[String]): Unit = {
-    val nbs = new NBS_Task
-    nbs.NBS_Task1
+val ct =new Cric_Task
+    ct.hongGuanMonthTask
+    ct.hongGuanTask
+
+
+
   }
 
   def loadFile: String = {
@@ -31,6 +36,8 @@ object scalaMain {
   }
 
 }
+
+class text extends httpCom
 
 //    val demo = new demo
 //    val us = new us
