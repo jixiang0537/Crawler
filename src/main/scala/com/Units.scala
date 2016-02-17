@@ -22,20 +22,20 @@ import scala.io.Source
  */
 class Units {
 
-  def deteTask(sDate: Int, eDate: Int):Array[String] = {
+  def deteTask(sDate: Int, eDate: Int): Array[String] = {
     var year = sDate
     val sdf = new SimpleDateFormat("yyyy-MM-dd");
     val ar = new ArrayBuffer[String]();
     //月份计数
     val cal = Calendar.getInstance(); //获得当前日期对象
     cal.clear();
-    for (ye <- sDate to eDate)  {
-      for (month <- 1 to 12)  {
+    for (ye <- sDate to eDate) {
+      for (month <- 1 to 12) {
         //清除信息
         cal.set(Calendar.YEAR, ye);
         cal.set(Calendar.MONTH, month - 1); //1月从0开始
         cal.set(Calendar.DAY_OF_MONTH, 1); //设置为1号,当前日期既为本月第一天
-        ar +=   sdf.format(cal.getTime())
+        ar += sdf.format(cal.getTime())
         val count = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
 
         //   System.out.println( count);
@@ -45,8 +45,8 @@ class Units {
           ar += sdf.format(cal.getTime()).toString
         }
       }
-//      m = 1
-//      year += 1;
+      //      m = 1
+      //      year += 1;
     }
 
     ar.toArray[String]
@@ -160,10 +160,32 @@ class Units {
 }
 
 object Units {
+  def setheader(host: String, referer: String = ""): ArrayBuffer[Header] = {
+    val ret = new ArrayBuffer[Header]()
+    ret += new BasicHeader("Host", host)
+    ret += new BasicHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:35.0) Gecko/20100101 Firefox/35.0")
+    ret += new BasicHeader("Accept", "application/x-ms-application, image/jpeg, application/xaml+xml, image/gif, image/pjpeg, application/x-ms-xbap, */*")
+    ret += new BasicHeader("Accept-Language", "zh-CN")
+    ret += new BasicHeader("Accept-Encoding", "gzip, deflate")
+    ret += new BasicHeader("Connection", "keep-Alive")
+    ret += new BasicHeader("Catch-Control", "no-cache")
+    ret += new BasicHeader("DNT", "1")
+
+    referer.size match {
+      case x if x > 0 => {
+        ret += new BasicHeader("referer", referer)
+      }
+      case _ =>
+
+    }
+    ret
+  }
+
   def intoSql = {
     val nbs = new NBS_ConnectSql
     nbs
   }
 
   val IHttpclient = HttpClients.custom().setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy()).build()
+
 }

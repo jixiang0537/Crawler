@@ -39,12 +39,12 @@ trait httpCom {
     response.getStatusLine.getStatusCode match {
       case 200 => {
         val content = Source.fromInputStream(response.getEntity.getContent, encoding).mkString
-        content
+        return content
       }
       case x: Int => throw new WebPageGetException(String.valueOf(x))
     }
-    val content = Source.fromInputStream(response.getEntity.getContent, encoding).mkString
-    content
+//    val content = Source.fromInputStream(response.getEntity.getContent, encoding).mkString
+//    content
   }
 
   def httpPostProxy(postUri: String, unitAr: Array[Header], ar: util.ArrayList[BasicNameValuePair], encoding: String = "utf-8", Proxy: String): String = {
@@ -68,12 +68,10 @@ trait httpCom {
     response.getStatusLine.getStatusCode match {
       case 200 => {
         val content = Source.fromInputStream(response.getEntity.getContent, encoding).mkString
-        content
+        return content
       }
       case x: Int => throw new WebPageGetException(String.valueOf(x))
     }
-    val content = Source.fromInputStream(response.getEntity.getContent, encoding).mkString
-    content
 
   }
 
@@ -86,6 +84,7 @@ trait httpCom {
  //   setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy())
     .build()
     val hg = new HttpGet(getUri)
+    hg.setHeaders(unitAr)
     val response = try {
       IHttpclient.execute(hg)
     } catch {
@@ -107,7 +106,7 @@ trait httpCom {
 
   }
 
-  def httpGetProxy(getUri: String, unitAr: Array[Header], encoding: String = "utf-8", Proxy: String,port:Int=80): String = {
+  def httpGetProxy(getUri: String, unitAr: Array[Header] , encoding: String = "utf-8", Proxy: String,port:Int=80): String = {
 
     val hProxy = new HttpHost(Proxy, port, "http");
 
@@ -121,6 +120,7 @@ trait httpCom {
       .build()
 
     val hg = new HttpGet(getUri)
+    hg.setHeaders(unitAr)
     val response = try {
       IHttpclient.execute(hg)
     } catch {
@@ -130,7 +130,7 @@ trait httpCom {
     response.getStatusLine.getStatusCode match {
       case 200 => {
         val content = Source.fromInputStream(response.getEntity.getContent, encoding).mkString
-        content
+       return content
       }
       case x: Int => throw new WebPageGetException(String.valueOf(x))
     }

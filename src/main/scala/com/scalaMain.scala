@@ -8,6 +8,7 @@ import akka.actor.Actor
 import com.IClrawler.Manage.{Cric_Task, NBS_Task}
 import com.IClrawler.TaskWork.{NationalData_WkOther, NationalData_Worker2}
 import com.IClrawler.{httpTest, Units, httpCom}
+import com.TaskWork.NBS_sort
 import net.sf.json.{JSONObject, JSON}
 import org.apache.http.Header
 import org.apache.http.message.BasicHeader
@@ -21,11 +22,20 @@ import scala.io.Source
  */
 object scalaMain {
   def main(args: Array[String]): Unit = {
-val ct =new Cric_Task
-    ct.hongGuanMonthTask
-    ct.hongGuanTask
+    val tp = new textP
+    val us = Units.setheader("ip.chinaz.com")
+   // val context = tp.(, us.toArray)
 
+     val context = tp.httpGetProxy("http://ip.chinaz.com/ipbatch",us.toArray,"utf-8","182.92.1.222" ,8123)
+    printf(context)
+    //    val nb = new NBS_sort
+    //    nb.task
 
+    //    val jp = Jsoup.parse(loadFile)
+    //    val tableCon = jp.select("td[id=tdContent]").select("tbody tbody")
+    //    for (i <- 0 until tableCon.size()) {
+    //      println(tableCon.get(0))
+    //    }
 
   }
 
@@ -70,3 +80,4 @@ class text extends httpCom
 //
 //    }
 
+class textP extends httpCom

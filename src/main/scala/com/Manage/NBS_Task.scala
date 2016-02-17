@@ -113,6 +113,7 @@ class NBS_Task {
     val taskType = "fsyd"
     var str3 = "http://data.stats.gov.cn/easyquery.htm?m=getOtherWds&dbcode=csyd&rowcode=zb&colcode=sj&wds=%5B%5D"
     val nw = new NationalData_WkOther
+    //
     NationalData_WkOther.map += (("", "null"))
     nw.dbcode = taskType
     nw.rowcode = "reg"

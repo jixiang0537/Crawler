@@ -74,6 +74,7 @@ class NationalData_WkOther {
     for (i <- 0 to jar.size - 1) {
       val job = JSONObject.fromObject(jar.get(i))
       if (job.get("isParent").toString == "true") {
+        //判断是否为父节点
         NationalData_WkOther.map.+=((job.get("id").toString, job.get("name").toString))
       } else {
         NationalData_WkOther.array(2) = NationalData_WkOther.map.get(job.get("pid").toString).get
@@ -109,7 +110,7 @@ class NationalData_WkOther {
     val je = JSONArray.fromObject(jd)
     for (i <- 0 to je.size - 1) {
       val job = JSONObject.fromObject(je.get(i))
-      val code= (job.get("code") toString, job.get("name") toString)
+      val code = (job.get("code") toString, job.get("name") toString)
       NationalData_WkOther.classifyMap += (code)
       NationalData_WkOther.classifyMap.foreach(e => println(e._1 + ":" + e._2))
     }
@@ -194,7 +195,8 @@ class NationalData_WkOther {
 
 
   def makeUri(cid: String, id: String) = {
-      val uri = "http://data.stats.gov.cn/easyquery.htm?m=QueryData&dbcode="+dbcode+"&rowcode="+rowcode+"&colcode=sj&wds=%5B%7B%22wdcode%22%3A%22reg%22%2C%22valuecode%22%3A%22" + cid + "%22%7D%5D&dfwds=%5B%7B%22wdcode%22%3A%22zb%22%2C%22valuecode%22%3A%22" + id + "%22%7D%5D"
+    val uri = "http://data.stats.gov.cn/easyquery.htm?m=QueryData&dbcode=fsyd&rowcode=reg&colcode=sj&wds=%5B%7B%22wdcode%22%3A%22zb%22%2C%22valuecode%22%3A%22" + cid + "%22%7D%5D&dfwds=%5B%5D"
+    //val uri = "http://data.stats.gov.cn/easyquery.htm?m=QueryData&dbcode="+dbcode+"&rowcode="+rowcode+"&colcode=sj&wds=%5B%7B%22wdcode%22%3A%22reg%22%2C%22valuecode%22%3A%22" + cid + "%22%7D%5D&dfwds=%5B%7B%22wdcode%22%3A%22zb%22%2C%22valuecode%22%3A%22" + id + "%22%7D%5D"
     //val uri = "http://data.stats.gov.cn/easyquery.htm?m=QueryData&dbcode=" + dbcode + "&rowcode=" + rowcode + "&colcode=sj&wds=%5B%7B%22wdcode%22%3A%22zb%22%2C%22valuecode%22%3A%22" + cid + "%22%7D%5D&dfwds=%5B%5d"
     // "http://data.stats.gov.cn/easyquery.htm?m=QueryData&dbcode=fsyd&rowcode=zb&colcode=sj&wds=%5B%7B%22wdcode%22%3A%22reg%22%2C%22valuecode%22%3A%22130000%22%7D%5D&dfwds=%5B%5D"
     uri
