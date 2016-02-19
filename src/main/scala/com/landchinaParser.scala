@@ -10,7 +10,8 @@ import org.jsoup.Jsoup
  */
 class landchinaParser {
   def mkLCPLink(date: String, num: Int = 1) = {
-    val str = "E:\\phantomjs-2.0.0-windows\\bin\\phantomjs.exe --load-images=false E:\\Cz\\ICrawler\\src\\main\\scala\\Phantomjs\\mainJs.js " + date + " " + num + ""
+    //返回调用phantomjs 命令行参数
+    val str = "E:\\phantomjs-2.0.0-windows\\bin\\phantomjs.exe --load-images=false E:\\Cz\\ICrawler\\src\\main\\scala\\Phantomjs\\demo.js " + date + " " + num + ""
     str
   }
 
@@ -27,11 +28,16 @@ class landchinaParser {
     val jp = Jsoup.parse(con)
     val r = """(?<=共)\w+(?=页)""".r
     val content = jp.select("td[align=right]").select("td[class=pager]").text()
-    val num = r.findFirstIn(content).get
+    val num = try {
+      r.findFirstIn(content).get
+    } catch {
+      case ex: Throwable => return ex.getMessage
+    }
     num
   }
 
   def jP1(str: String) = {
+    //第一张表数据
     val content = Jsoup.parse(str)
     val ar = Array(
       content.select("span[id=mainModuleContainer_1855_1856_ctl00_ctl00_p1_f1_r1_c2_ctrl").text(), //行政区
@@ -61,6 +67,7 @@ class landchinaParser {
   }
 
   def jP2(str: String) = {
+    //第二张表数据
     val content = Jsoup.parse(str)
     val ar = Array(
       content.select("span[id=mainModuleContainer_1855_1856_ctl00_ctl00_p1_f1_r1_c4_ctrl").text, //电子监管号
@@ -80,6 +87,7 @@ class landchinaParser {
 
 class taskLCWork extends Actor {
   override def receive = {
+    //landchina 传入时间参数 执行Phantom脚本 根据当前日期页面参数进行分析
     case ("dataTask", date: String) => {
       val lp = new landchinaParser
       val rp = new runPhantom
@@ -87,15 +95,19 @@ class taskLCWork extends Actor {
       val content = rp.runJS(cmdLink)
       content match {
         case "false" => throw new NullResponseException(cmdLink)
-        case con:String => {
+        case con: String => {
+          //获得当前日期页面页数 如果页面数量 为1
           lp.getLCPageNum(con) match {
             case "1" => {
-              context.actorOf(Props[taskLCWork])
+              sender() !("landchina", content)
 
             }
+            //如果页面数量 为多
             case x: String => {
               for (i <- 0 to x.toInt) {
-                lp.mkLCPLink(date, x.toInt)
+                //根据当前页面参数重复请求每个页面 获取每个页面
+                val thisCon = rp.runJS(lp.mkLCPLink(date, x.toInt))
+                sender() !("landchina", thisCon)
 
               }
             }
@@ -106,6 +118,7 @@ class taskLCWork extends Actor {
 
     }
     case ("jP1", content: String) => {
+      //根据唯一ID 分表存储数据
       val jp = new landchinaParser
       val lcq = new landchina_Sql
       val ar = jp.jP1(content)
@@ -113,6 +126,7 @@ class taskLCWork extends Actor {
 
     }
     case ("jP2", content: String) => {
+      //根据唯一ID 分表存储数据
       val jp = new landchinaParser
       val ar = jp.jP2(content)
       val lcq = new landchinaOther_Sql

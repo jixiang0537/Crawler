@@ -1,5 +1,6 @@
 package com.TaskWork
 
+import java.io.IOException
 import java.util
 
 import com.IClrawler
@@ -19,31 +20,35 @@ import scala.util.Random
  */
 class NBS_sort extends httpCom {
   var dataType = ""
-  var uri = "http://data.stats.gov.cn/easyquery.htm?cn=E0101"
-  var dbcode = "fsyd"
+  var uri = "http://data.stats.gov.cn/easyquery.htm?cn=E0103"
+  //任务类型 fsyd分省月度 fsnd分省年度 csyd主要城市月度
+  var dbcode = "fsnd"
   var wdcode = "zb"
   var rowcode = "zb"
+  var dateFormat = "201511-201512"
 
   def task: Unit = {
+    dataType = "分省年度数据"
     val usA = Units.setheader("data.stats.gov.cn", uri)
-    var taskType = "fsyd"
     NBS_sort.map += (("", "null"))
     setCookie
-    firstGet("http://data.stats.gov.cn/easyquery.htm?m=QueryData&dbcode=hgyd&rowcode=zb&colcode=sj&wds=%5B%5D&dfwds=%5B%7B%22wdcode%22%3A%22sj%22%2C%22valuecode%22%3A%22201511-201512%22%7D%5D")
+    firstGet(s"http://data.stats.gov.cn/easyquery.htm?m=QueryData&dbcode=$dbcode&rowcode=zb&colcode=sj&wds=%5B%5D&dfwds=%5B%7B%22wdcode%22%3A%22sj%22%2C%22valuecode%22%3A%22$dateFormat%22%7D%5D")
     //获得城市映射JSON URI
-    val cityUri = "http://data.stats.gov.cn/easyquery.htm?m=getOtherWds&dbcode=fsyd&rowcode=zb&colcode=sj&wds=%5B%5D&k1"
+    val cityUri = s"http://data.stats.gov.cn/easyquery.htm?m=getOtherWds&dbcode=$dbcode&rowcode=zb&colcode=sj&wds=%5B%5D&k1"
     //获得分类标签映射JSON URI
-    val tagUri = "http://data.stats.gov.cn/easyquery.htm?m=getOtherWds&dbcode=fsyd&rowcode=reg&colcode=sj&wds=%5B%5D&k1"
-    addClassifyId(httpGet(cityUri, usA.toArray))
+    val tagUri = s"http://data.stats.gov.cn/easyquery.htm?m=getOtherWds&dbcode=$dbcode&rowcode=reg&colcode=sj&wds=%5B%5D&k1"
+
     addClassifyId(httpGet(tagUri, usA.toArray))
+    NBS_sort.map ++= addClassifyId(httpGet(cityUri, usA.toArray))
+    NBS_sort.map ++= addClassifyId(httpGet(tagUri, usA.toArray))
+
+    NBS_sort.cityMap ++= addClassifyId(httpGet(cityUri, usA.toArray))
     println("分类标签已获取")
-    dataType = "分省月度数据"
 
     post("zb")
-
   }
 
-   def post(id: String = "zb", postUri: String = "http://data.stats.gov.cn/easyquery.htm") :String= {
+  def post(id: String = "zb", postUri: String = "http://data.stats.gov.cn/easyquery.htm"): String = {
     //请求标签 获得基础标签JSON
     val ar = new util.ArrayList[BasicNameValuePair]
     ar.add(new BasicNameValuePair("id", id))
@@ -54,8 +59,9 @@ class NBS_sort extends httpCom {
     val usA = Units.setheader("data.stats.gov.cn", uri)
     usA += new BasicHeader("Cookie", NBS_sort.Cookie.split(":")(1))
     val str = super.httpPost(postUri, usA.toArray, ar)
-     Jparse(str)
-     str
+    Jparse(str)
+    str
+
   }
 
   def Jparse2(string: String) = {
@@ -89,7 +95,7 @@ class NBS_sort extends httpCom {
         NBS_sort.map.+=((job.get("id").toString, job.get("name").toString));
         NBS_sort.array(2) = NBS_sort.map.get(job.get("pid").toString).get
         NBS_sort.array(0) = job.get("name").toString;
-        NBS_sort.map.foreach(e => httpGet(e._1, job.get("id").toString))
+        NBS_sort.cityMap.foreach(e => httpGet(e._1, job.get("id").toString))
       }
     }
   }
@@ -104,14 +110,22 @@ class NBS_sort extends httpCom {
   }
 
   def httpGet(str: String, tag: String): Unit = {
+
     NBS_sort.array(3) = NBS_sort.map.get(str).get
     val url = makeUri(str, tag)
     println(url)
     val usA = Units.setheader("data.stats.gov.cn", uri)
     usA += new BasicHeader("Cookie", NBS_sort.Cookie.split(":")(1))
-    val content = super.httpGet(url, usA.toArray)
-    content
-    IJsonParse(content)
+    //采用代理请求
+    try {
+      val content = super.httpGet(url, usA.toArray, "utf-8")
+
+      // val content = super.httpGetProxy(url, usA.toArray, "utf-8", "182.92.1.222", 8123)
+      content
+      IJsonParse(content)
+    } catch {
+      case e: Throwable => super.httpGetProxy(url, usA.toArray, "utf-8", "182.92.1.222", 8123)
+    }
 
   }
 
@@ -175,7 +189,7 @@ class NBS_sort extends httpCom {
       //      NBS_sort.sortMap += (code)
       //      NBS_sort.sortMap.foreach(e => println(e._1 + ":" + e._2))
       NBS_sort.map += (code)
-  //    NBS_sort.map.foreach(e => println(e._1 + ":" + e._2))
+      //    NBS_sort.map.foreach(e => println(e._1 + ":" + e._2))
     }
   }
 
@@ -191,17 +205,16 @@ class NBS_sort extends httpCom {
       //      NBS_sort.cityMap += ((job.get("code") toString, job.get("name") toString))
       //      NBS_sort.cityMap.foreach(e => println(e._1 + ":" + e._2))
       NBS_sort.map += ((job.get("code") toString, job.get("name") toString))
- //     NBS_sort.map.foreach(e => println(e._1 + ":" + e._2))
+      //     NBS_sort.map.foreach(e => println(e._1 + ":" + e._2))
     }
   }
 
   def makeUri(cid: String, id: String) = {
-    "http://data.stats.gov.cn/easyquery.htm?m=QueryData&dbcode=fsyd&rowcode=zb&colcode=sj&wds=%5B%7B%22wdcode%22%3A%22reg%22%2C%22valuecode%22%3A%22540000%22%7D%5D&dfwds=%5B%7B%22wdcode%22%3A%22zb%22%2C%22valuecode%22%3A%22A010105%22%7D%5D&k1=1455681421285"
-  //  "http://data.stats.gov.cn/easyquery.htm?m=QueryData&dbcode=fsyd&rowcode=reg&colcode=sj&wds=%5B%7B%22wdcode%22%3A%22zb%22%2C%22valuecode%22%3A%22A01010101%22%7D%5D&dfwds=%5B%5D"
-    val uri = "http://data.stats.gov.cn/easyquery.htm?m=QueryData&dbcode=fsyd&rowcode=zb&colcode=sj&wds=%5B%7B%22wdcode%22%3A%22reg%22%2C%22valuecode%22%3A%22" + cid + "%22%7D%5D&dfwds=%5B%5D"
-    //val uri = "http://data.stats.gov.cn/easyquery.htm?m=QueryData&dbcode="+dbcode+"&rowcode="+rowcode+"&colcode=sj&wds=%5B%7B%22wdcode%22%3A%22reg%22%2C%22valuecode%22%3A%22" + cid + "%22%7D%5D&dfwds=%5B%7B%22wdcode%22%3A%22zb%22%2C%22valuecode%22%3A%22" + id + "%22%7D%5D"
-    //val uri = "http://data.stats.gov.cn/easyquery.htm?m=QueryData&dbcode=" + dbcode + "&rowcode=" + rowcode + "&colcode=sj&wds=%5B%7B%22wdcode%22%3A%22zb%22%2C%22valuecode%22%3A%22" + cid + "%22%7D%5D&dfwds=%5B%5d"
-    // "http://data.stats.gov.cn/easyquery.htm?m=QueryData&dbcode=fsyd&rowcode=zb&colcode=sj&wds=%5B%7B%22wdcode%22%3A%22reg%22%2C%22valuecode%22%3A%22130000%22%7D%5D&dfwds=%5B%5D"
+    val uri = s"http://data.stats.gov.cn/easyquery.htm?m=QueryData&dbcode=$dbcode&rowcode=zb&colcode=sj&wds=%5B%7B%22wdcode%22%3A%22reg%22%2C%22valuecode%22%3A%22" + cid + "%22%7D%5D&dfwds=%5B%7B%22wdcode%22%3A%22zb%22%2C%22valuecode%22%3A%22" + id + "%22%7D%5D"
+    //  "http://data.stats.gov.cn/easyquery.htm?m=QueryData&dbcode=fsyd&rowcode=reg&colcode=sj&wds=%5B%7B%22wdcode%22%3A%22zb%22%2C%22valuecode%22%3A%22A01010101%22%7D%5D&dfwds=%5B%5D"
+
+    // val uri = "http://data.stats.gov.cn/easyquery.htm?m=QueryData&dbcode=fsyd&rowcode=zb&colcode=sj&wds=%5B%7B%22wdcode%22%3A%22reg%22%2C%22valuecode%22%3A%22" + cid + "%22%7D%5D&dfwds=%5B%5D"
+
     uri
   }
 
@@ -212,12 +225,15 @@ class NBS_sort extends httpCom {
 
     val jd = JSONObject.fromObject(jc).get("nodes")
     val je = JSONArray.fromObject(jd)
-    for (i <- 0 to je.size - 1) {
-      val job = JSONObject.fromObject(je.get(i))
-      val code = (job.get("code") toString, job.get("name") toString)
-      NBS_sort.map += (code)
-  //    NBS_sort.map.foreach(e => println(e._1 + ":" + e._2))
-    }
+    for (i <- 0 to je.size - 1)
+
+
+    //    NBS_sort.map.foreach(e => println(e._1 + ":" + e._2))
+      yield {
+        val job = JSONObject.fromObject(je.get(i))
+        val code = (job.get("code") toString, job.get("name") toString)
+        code
+      }
   }
 
   def addSql() = {

@@ -61,7 +61,7 @@ class NationalData_Work {
     print(content)
     val units = new Units
     units.JParse(array, content, month)
-    Thread.sleep(new Random(6000).nextInt(10000))
+
   }
 
 }

@@ -43,8 +43,8 @@ trait httpCom {
       }
       case x: Int => throw new WebPageGetException(String.valueOf(x))
     }
-//    val content = Source.fromInputStream(response.getEntity.getContent, encoding).mkString
-//    content
+    //    val content = Source.fromInputStream(response.getEntity.getContent, encoding).mkString
+    //    content
   }
 
   def httpPostProxy(postUri: String, unitAr: Array[Header], ar: util.ArrayList[BasicNameValuePair], encoding: String = "utf-8", Proxy: String): String = {
@@ -95,8 +95,8 @@ trait httpCom {
       case 200 => {
         val content = try {
           Source.fromInputStream(response.getEntity.getContent, encoding).mkString
-        }catch {
-          case ex :Exception => throw new NullResponseException(getUri)
+        } catch {
+          case ex: Exception => throw new NullResponseException(getUri)
         }
         content.toString
       }
@@ -106,7 +106,7 @@ trait httpCom {
 
   }
 
-  def httpGetProxy(getUri: String, unitAr: Array[Header] , encoding: String = "utf-8", Proxy: String,port:Int=80): String = {
+  def httpGetProxy(getUri: String, unitAr: Array[Header], encoding: String = "utf-8", Proxy: String, port: Int = 80): String = {
 
     val hProxy = new HttpHost(Proxy, port, "http");
 
@@ -129,8 +129,12 @@ trait httpCom {
     }
     response.getStatusLine.getStatusCode match {
       case 200 => {
-        val content = Source.fromInputStream(response.getEntity.getContent, encoding).mkString
-       return content
+        val content = try {
+          Source.fromInputStream(response.getEntity.getContent, encoding).mkString
+        } catch {
+          case ex: Throwable => return "出现异常"
+        }
+        return content
       }
       case x: Int => throw new WebPageGetException(String.valueOf(x))
     }
@@ -138,5 +142,9 @@ trait httpCom {
 
   }
 
+
+}
+
+object httpCom {
 
 }

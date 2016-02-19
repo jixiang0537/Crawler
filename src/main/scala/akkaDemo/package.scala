@@ -18,14 +18,13 @@ object CrawlerAkka extends App {
 
   val us = new Units
   val system = ActorSystem("CrawlerAkka")
-  val greeter = system.actorOf(Props[manage], "init")
+  //val greeter = system.actorOf(Props[manage], "init")
   val greet = system.actorOf(Props[manage], "overseer")
   val task = system.actorOf(Props[manage], "task")
+
   val enc = "gb2312"
-  system.scheduler.schedule(0 second, 5 second, greet, (enc, 1))(system.dispatcher, task)
-      system.actorOf(Props[manage]) ! ("start",1995,2000)
-
-
+  system.scheduler.schedule(0 second, 1 second, greet, (enc, 10))(system.dispatcher, task)
+  system.actorOf(Props[manage]) !("start", 2000, 2016)
 
 
 }
@@ -36,17 +35,17 @@ class manage extends Actor {
     //      val akkaHttp = new akkaHttp
     //      akkaHttp.httpGet(uri, unitAr,)
     //    }
-    case ("start",x:Int,y:Int) => {
+    case ("start", x: Int, y: Int) => {
       val us = new Units
-      val dataAr= us.deteTask(x,y)
-      for(i<- 0 until(dataAr.length)) context.actorOf(Props[taskWork]) ! ("dataTask" ,dataAr(i))
-
-
+      val dataAr = us.deteTask(x, y)
+      //获得 日期 19xx xx xx 集合 发送线程开始任务 根据日期调用phantom脚本
+      for (i <- 0 until (dataAr.length)) context.actorOf(Props[taskLCWork]) !("dataTask", dataAr(i))
     }
-      case x: Int => {
+    case ("landchina",content:String) => {
+      // landchina 根据抓取的页面内容 分析子页面链接 加入任务队列 landchina.lcAr
       val lc = new landchina
       val rp = new runPhantom
-    //  landchina.lcAr ++= (lc jsoupParserLd (rp.runJS(x)))
+        landchina.lcAr ++= (lc jsoupParserLd (content))
     }
     case (enc: String, x: Int) => {
       println(landchina.lcAr.size)
@@ -95,7 +94,8 @@ class taskWork extends Actor {
       val us = new Units
       val lcg = new landchinaGet
       val lc = new landchina
-      val fc = lcg.httpGet(landchina.returnUri, us.setheader("www.landchina.com", ""), enc)
+      val fc = lcg.httpGetProxy(landchina.returnUri, us.setheader("www.landchina.com"), enc,"182.92.1.222",8123)
+      //将获取的子页面数据 分别发送到两个线程中解析  解析为两个表
       context.actorOf(Props[taskLCWork]) !("jP1", fc: String)
       context.actorOf(Props[taskLCWork]) !("jP2", fc: String)
 
