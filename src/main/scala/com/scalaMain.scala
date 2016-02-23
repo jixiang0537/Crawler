@@ -23,15 +23,14 @@ import scala.sys.Prop
  */
 object scalaMain {
   def main(args: Array[String]): Unit = {
-    val nbs = new NBS_sort
-    nbs .task
+//    val nbs = new NBS_sort
+//    nbs .task
 
-    //    val tp = new textP
-    //    val us = Units.setheader("ip.chinaz.com")
-    // val context = tp.(, us.toArray)
-    //
-    //     val context = tp.httpGetProxy("http://ip.chinaz.com/ipbatch",us.toArray,"utf-8","182.92.1.222" ,8123)
-    //    printf(context)
+        val tp = new textP
+        val us = Units.setheader("ip.chinaz.com")
+
+         val context = tp.httpGetProxy("http://ip.chinaz.com/ipbatch",us.toArray,"utf-8","182.92.1.222" ,8123)
+        printf(context)
 
 
     //    val jp = Jsoup.parse(loadFile)

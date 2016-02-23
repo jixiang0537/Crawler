@@ -27,13 +27,15 @@ class landchinaParser {
   def getLCPageNum(con: String): String = {
     val jp = Jsoup.parse(con)
     val r = """(?<=共)\w+(?=页)""".r
-    val content = jp.select("td[align=right]").select("td[class=pager]").text()
-    val num = try {
-      r.findFirstIn(content).get
+    try {
+      val content = jp.select("td[align=right]").select("td[class=pager]").text()
+      val num = r.findFirstIn(content).get
+      num
     } catch {
-      case ex: Throwable => return ex.getMessage
+      case ex: NumberFormatException => return "1"
+      case ex: Throwable => return "1"
     }
-    num
+
   }
 
   def jP1(str: String) = {
@@ -92,18 +94,21 @@ class taskLCWork extends Actor {
       val lp = new landchinaParser
       val rp = new runPhantom
       val cmdLink = lp.mkLCPLink(date)
+      println(cmdLink)
       val content = rp.runJS(cmdLink)
       content match {
         case "false" => throw new NullResponseException(cmdLink)
+        case "Unable to post!" => println(s"脚本 或 页面 出错 ===$date")
+
         case con: String => {
           //获得当前日期页面页数 如果页面数量 为1
           lp.getLCPageNum(con) match {
-            case "1" => {
+            case x: String if x.toInt == 1 => {
               sender() !("landchina", content)
 
             }
             //如果页面数量 为多
-            case x: String => {
+            case x: String if x.toInt > 1 => {
               for (i <- 0 to x.toInt) {
                 //根据当前页面参数重复请求每个页面 获取每个页面
                 val thisCon = rp.runJS(lp.mkLCPLink(date, x.toInt))

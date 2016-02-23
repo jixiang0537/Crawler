@@ -1,6 +1,6 @@
 package com
 
-import Exception.NullUriException
+import Exception.{WebPageGetException, NullUriException}
 
 import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.duration._
@@ -14,16 +14,20 @@ import scala.io.Source
  */
 class landchina {
 
-
   def jsoupParserLd(file: String) = {
     val jp = Jsoup.parse(file)
-    val linkList = jp.body().select("a[href^=default.aspx]")
-    val list = {
-      for (i <- 0 to linkList.size() - 1) yield {
-        makeUriLC(linkList.get(i).attr("href"))
+    try {
+      val linkList = jp.body().select("a[href^=default.aspx]")
+      val list = {
+        for (i <- 0 to linkList.size() - 1) yield {
+          makeUriLC(linkList.get(i).attr("href"))
+        }
       }
+
+      list.toArray
+    }catch {
+      case ex:Exception=>throw new WebPageGetException(ex.getMessage)
     }
-    list.toArray
   }
 
   def makeUriLC(link: String) = {
@@ -38,7 +42,6 @@ class landchina {
 }
 
 class landchinaGet extends httpCom {
-
 }
 
 object landchina {
