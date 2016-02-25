@@ -45,6 +45,7 @@ class landchinaGet extends httpCom {
 }
 
 object landchina {
+  var landChinaNum = 0
   def returnUri: String = {
     landchina.lcAr.size match {
       case 0 => throw new NullUriException

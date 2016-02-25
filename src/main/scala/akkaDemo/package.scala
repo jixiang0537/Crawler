@@ -3,10 +3,11 @@ import java.lang.Thread
 import akka.actor.{Actor, Props, ActorSystem}
 import com.IClrawler.{httpCom, Units}
 import com._
+import com.typesafe.config.ConfigFactory
 import org.apache.http.Header
 import org.apache.http.client.methods.{HttpGet}
 import org.apache.http.impl.client.{DefaultConnectionKeepAliveStrategy, HttpClients}
-import org.apache.log4j.Logger
+import org.apache.log4j.{PropertyConfigurator, Logger}
 import scala.concurrent.duration._
 
 
@@ -16,16 +17,16 @@ import scala.concurrent.duration._
 //case class greet(string: String, int: Int)
 
 object CrawlerAkka extends App {
-new
-  val us = new Units
-  val system = ActorSystem("CrawlerAkka")
+  PropertyConfigurator.configure("log4j.properties");
+  val config = ConfigFactory.load()
+  val system = ActorSystem("CrawlerAkka",config.getConfig("akka").withFallback(config))
   //val greeter = system.actorOf(Props[manage], "init")
   val greet = system.actorOf(Props[manage], "overseer")
   val task = system.actorOf(Props[manage], "task")
 
   val enc = "gb2312"
   system.scheduler.schedule(0 second, 1 second, greet, (enc, 10))(system.dispatcher, task)
-  system.actorOf(Props[manage]) !("start", 2016, 2016)
+  system.actorOf(Props[manage]) !("start", "2014-01-01", "2014-01-03")
 
 
 }
@@ -36,7 +37,7 @@ class manage extends Actor {
     //      val akkaHttp = new akkaHttp
     //      akkaHttp.httpGet(uri, unitAr,)
     //    }
-    case ("start", x: Int, y: Int) => {
+    case ("start", x: String, y: String) => {
       val us = new Units
       val dataAr = us.deteTask(x, y)
       //获得 日期 19xx xx xx 集合 发送线程开始任务 根据日期调用phantom脚本
@@ -97,7 +98,12 @@ class taskWork extends Actor {
       val us = new Units
       val lcg = new landchinaGet
       val lc = new landchina
-      val fc = lcg.httpGetProxy(landchina.returnUri, us.setheader("www.landchina.com"), enc, "182.92.1.222", 8123)
+      val uri = landchina.returnUri
+      landchina.landChinaNum+=1
+      val fc = lcg.httpGet(uri, us.setheader("www.landchina.com"), enc)
+      MyLogger(this.getClass).info( "连接数为"+landchina.landChinaNum +" - - - " +uri )
+
+      //val fc = lcg.httpGetProxy(landchina.returnUri, us.setheader("www.landchina.com"), enc, "182.92.1.222", 8123)
       //将获取的子页面数据 分别发送到两个线程中解析  解析为两个表
       context.actorOf(Props[taskLCWork]) !("jP1", fc: String)
       context.actorOf(Props[taskLCWork]) !("jP2", fc: String)

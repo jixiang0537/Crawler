@@ -88,17 +88,19 @@ class landchinaParser {
 }
 
 class taskLCWork extends Actor {
+  val log = MyLogger(this.getClass)
+
   override def receive = {
     //landchina 传入时间参数 执行Phantom脚本 根据当前日期页面参数进行分析
     case ("dataTask", date: String) => {
       val lp = new landchinaParser
       val rp = new runPhantom
       val cmdLink = lp.mkLCPLink(date)
-      println(cmdLink)
       val content = rp.runJS(cmdLink)
+      log info (cmdLink)
       content match {
         case "false" => throw new NullResponseException(cmdLink)
-        case "Unable to post!" => println(s"脚本 或 页面 出错 ===$date")
+        case "Unable to post!" => log error (s"脚本 或 页面 出错 ===$date")
 
         case con: String => {
           //获得当前日期页面页数 如果页面数量 为1
@@ -111,7 +113,9 @@ class taskLCWork extends Actor {
             case x: String if x.toInt > 1 => {
               for (i <- 0 to x.toInt) {
                 //根据当前页面参数重复请求每个页面 获取每个页面
-                val thisCon = rp.runJS(lp.mkLCPLink(date, x.toInt))
+                val link = lp.mkLCPLink(date, x.toInt)
+                MyLogger(this.getClass) info(link)
+                val thisCon = rp.runJS(link)
                 sender() !("landchina", thisCon)
 
               }

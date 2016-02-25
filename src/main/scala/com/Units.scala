@@ -1,8 +1,8 @@
 package com.IClrawler
 
 import java.io._
-import java.text.SimpleDateFormat
-import java.util.Calendar
+import java.text.{ParseException, SimpleDateFormat}
+import java.util.{Date, Calendar}
 
 
 import com.IClrawler.SQL.NBS_ConnectSql
@@ -22,37 +22,78 @@ import scala.io.Source
  */
 class Units {
 
-  def deteTask(sDate: Int, eDate: Int): Array[String] = {
-    var year = sDate
-    val sdf = new SimpleDateFormat("yyyy-MM-dd");
-    val ar = new ArrayBuffer[String]();
-    //月份计数
-    val cal = Calendar.getInstance(); //获得当前日期对象
-    cal.clear();
-    for (ye <- sDate to eDate) {
-      for (month <- 1 to 12) {
-        //清除信息
-        cal.set(Calendar.YEAR, ye);
-        cal.set(Calendar.MONTH, month - 1); //1月从0开始
-        cal.set(Calendar.DAY_OF_MONTH, 1); //设置为1号,当前日期既为本月第一天
-        ar += sdf.format(cal.getTime())
-        val count = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-
-        //   System.out.println( count);
-
-        for (i <- 0 to count - 2) {
-          cal.add(Calendar.DAY_OF_MONTH, +1);
-          ar += sdf.format(cal.getTime()).toString
-        }
-      }
-      //      m = 1
-      //      year += 1;
+  def deteTask(date1: String, date2: String): Array[String] = {
+    //返回给定两个日期之间 精度为日 字符串集合 #2014-01-01
+    val dateFormat: String = "yyyy-MM-dd"
+    val format: SimpleDateFormat = new SimpleDateFormat(dateFormat)
+    val ar = new ArrayBuffer[String]()
+    var sDate = date1
+    var eDate = date2
+    var tmp: String = null
+    ar += sDate
+    ar += eDate
+    if (sDate.compareTo(eDate) > 0) {
+      tmp = sDate
+      sDate = eDate
+      eDate = tmp
+    }
+    tmp = format.format(str2Date(format, sDate).getTime + 3600 * 24 * 1000)
+    var num: Int = 0
+    while (tmp.compareTo(eDate) < 0) {
+      ar += tmp
+      num += 1
+      tmp = format.format(str2Date(format, tmp).getTime + 3600 * 24 * 1000)
     }
 
-    ar.toArray[String]
+    ar.toArray
+
   }
 
+  def str2Date(format: SimpleDateFormat, str: String): Date = {
+    if (str == null) return null
+    try {
+      return format.parse(str)
+    }
+    catch {
+      case e: ParseException => {
+        e.printStackTrace
+      }
+    }
+    return null
+  }
+
+
+  //    var year = sDate
+  //    val sdf = new SimpleDateFormat("yyyy-MM-dd");
+  //    val ar = new ArrayBuffer[String]();
+  //    //月份计数
+  //    val cal = Calendar.getInstance(); //获得当前日期对象
+  //    cal.clear();
+  //    for (ye <- sDate to eDate) {
+  //      for (month <- 1 to 12) {
+  //        //清除信息
+  //        cal.set(Calendar.YEAR, ye);
+  //        cal.set(Calendar.MONTH, month - 1); //1月从0开始
+  //        cal.set(Calendar.DAY_OF_MONTH, 1); //设置为1号,当前日期既为本月第一天
+  //        ar += sdf.format(cal.getTime())
+  //        val count = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+  //
+  //        //   System.out.println( count);
+  //
+  //        for (i <- 0 to count - 2) {
+  //          cal.add(Calendar.DAY_OF_MONTH, +1);
+  //          ar += sdf.format(cal.getTime()).toString
+  //        }
+  //      }
+  //      //      m = 1
+  //      //      year += 1;
+  //    }
+  //
+  //    ar.toArray[String]
+
+
   def setheader(host: String, referer: String = ""): Array[Header] = {
+    //设置响应头
     referer match {
       case "" => {
         val ret = new Array[Header](8)

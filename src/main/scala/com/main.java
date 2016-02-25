@@ -1,39 +1,56 @@
 package com;
 
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class main {
-    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    String dateFormat = "yyyy-MM-dd";
+    SimpleDateFormat format = new SimpleDateFormat(dateFormat);
 
     public static void main(String[] args) {
-        int year = 1999;
-        int m = 1;//月份计数
-        while (year < 2016) {
-            Calendar cal = Calendar.getInstance();//获得当前日期对象
-            cal.clear();
-            while (m < 13) {
-                int month = m;
-              //清除信息
-                cal.set(Calendar.YEAR, year);
-                cal.set(Calendar.MONTH, month - 1);//1月从0开始
-                cal.set(Calendar.DAY_OF_MONTH, 1);//设置为1号,当前日期既为本月第一天
+        main t = new main();
 
-                System.out.println(sdf.format(cal.getTime()));
+        String date1 = "2012-02-26";
+        String date2 = "2016-12-04";
 
-                int count = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        t.process(date1, date2);
+    }
 
-                //   System.out.println( count);
-
-                for (int j = 0; j <= (count - 2); ) {
-                    cal.add(Calendar.DAY_OF_MONTH, +1);
-                    j++;
-                    System.out.println(sdf.format(cal.getTime()));
-                }
-                m++;
-            }
-            year++;
+    private void process(String date1, String date2){
+        if(date1.equals(date2)){
+            System.out.println("两个日期相等!");
+            return;
         }
+
+        String tmp;
+        if(date1.compareTo(date2) > 0){  //确保 date1的日期不晚于date2
+            tmp = date1; date1 = date2; date2 = tmp;
+        }
+
+        tmp = format.format(str2Date(date1).getTime() + 3600*24*1000);
+
+        int num = 0;
+        while(tmp.compareTo(date2) < 0){
+            System.out.println(tmp);
+            num++;
+            tmp = format.format(str2Date(tmp).getTime() + 3600*24*1000);
+        }
+
+        if(num == 0)
+            System.out.println("两个日期相邻!");
+    }
+
+    private Date str2Date(String str) {
+        if (str == null) return null;
+
+        try {
+            return format.parse(str);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
