@@ -100,7 +100,7 @@ class taskLCWork extends Actor {
       log info (cmdLink)
       content match {
         case "false" => throw new NullResponseException(cmdLink)
-        case "Unable to post!" => log error (s"脚本 或 页面 出错 ===$date")
+        case x: String if x.length < 100 => log error (s"脚本 或 页面 出错 ===$date- - - - -"+cmdLink)
 
         case con: String => {
           //获得当前日期页面页数 如果页面数量 为1
@@ -114,7 +114,7 @@ class taskLCWork extends Actor {
               for (i <- 0 to x.toInt) {
                 //根据当前页面参数重复请求每个页面 获取每个页面
                 val link = lp.mkLCPLink(date, x.toInt)
-                MyLogger(this.getClass) info(link)
+                MyLogger(this.getClass) info (link)
                 val thisCon = rp.runJS(link)
                 sender() !("landchina", thisCon)
 
