@@ -5,6 +5,8 @@ import akka.actor.{Props, Actor}
 import com.SQL.{landchinaOther_Sql, landchina_Sql}
 import org.jsoup.Jsoup
 
+import scala.util.Random
+
 /**
  * Created by dell on 2016/1/18.
  */
@@ -91,16 +93,25 @@ class taskLCWork extends Actor {
   val log = MyLogger(this.getClass)
 
   override def receive = {
+    case ("landchina", content: String) => {
+      // landchina 根据抓取的页面内容 分析子页面链接 加入任务队列 landchina.lcAr
+      val lc = new landchina
+      val rp = new runPhantom
+      landchina.lcAr ++= (lc jsoupParserLd (content))
+    }
     //landchina 传入时间参数 执行Phantom脚本 根据当前日期页面参数进行分析
     case ("dataTask", date: String) => {
       val lp = new landchinaParser
       val rp = new runPhantom
+
+      Thread.sleep(Random.nextInt(50000))
+
       val cmdLink = lp.mkLCPLink(date)
       val content = rp.runJS(cmdLink)
       log info (cmdLink)
       content match {
-        case "false" => throw new NullResponseException(cmdLink)
-        case x: String if x.length < 100 => log error (s"脚本 或 页面 出错 ===$date- - - - -"+cmdLink)
+        case "false" => log error ("错误 - - -" + cmdLink)
+        case x: String if x.length < 500 => log error (s"脚本 或 页面 出错 ===$date- - - - -" + cmdLink)
 
         case con: String => {
           //获得当前日期页面页数 如果页面数量 为1
@@ -111,12 +122,15 @@ class taskLCWork extends Actor {
             }
             //如果页面数量 为多
             case x: String if x.toInt > 1 => {
-              for (i <- 0 to x.toInt) {
+              for (i <- 1 to x.toInt) {
                 //根据当前页面参数重复请求每个页面 获取每个页面
-                val link = lp.mkLCPLink(date, x.toInt)
+                val link = lp.mkLCPLink(date, i)
                 MyLogger(this.getClass) info (link)
-                val thisCon = rp.runJS(link)
-                sender() !("landchina", thisCon)
+                context.actorOf(Props[taskLCWork]) !("subTask", link)
+                Thread.sleep(Random.nextInt(50000))
+
+                //                val thisCon = rp.runJS(link)
+                //                sender() !("landchina", thisCon)
 
               }
             }
@@ -142,6 +156,19 @@ class taskLCWork extends Actor {
       lcq.insetData(ar(0), ar(1), ar(2), ar(3), ar(4), ar(5), ar(6), ar(7), ar(8))
 
     }
-  }
+    case ("subTask", link: String) => {
+      val rp = new runPhantom
+      rp.runJS(link) match {
+        case "false" => log error ("错误 - - -" + link)
+        case x: String if x.length < 500 => log error (s"脚本 或 页面 出错 ===- - - - -" + link)
+        case x: String =>sender() !("landchina", x)
+        case _ => log error ("错误-" + link)
 
+      }
+
+
+    }
+
+
+  }
 }

@@ -30,6 +30,9 @@ class Units {
     var sDate = date1
     var eDate = date2
     var tmp: String = null
+
+    if (date1 == date2) {ar += date1 ;return ar.toArray}
+
     ar += sDate
     ar += eDate
     if (sDate.compareTo(eDate) > 0) {

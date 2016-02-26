@@ -19,14 +19,14 @@ import scala.concurrent.duration._
 object CrawlerAkka extends App {
   PropertyConfigurator.configure("log4j.properties");
   val config = ConfigFactory.load()
-  val system = ActorSystem("CrawlerAkka",config.getConfig("akka").withFallback(config))
+  val system = ActorSystem("CrawlerAkka", config.getConfig("akka").withFallback(config))
   //val greeter = system.actorOf(Props[manage], "init")
   val greet = system.actorOf(Props[manage], "overseer")
   val task = system.actorOf(Props[manage], "task")
 
   val enc = "gb2312"
   system.scheduler.schedule(0 second, 1 second, greet, (enc, 10))(system.dispatcher, task)
-  system.actorOf(Props[manage]) !("start", "2014-01-01", "2014-01-03")
+  system.actorOf(Props[manage]) !("start", "2014-01-01", "2015-01-03")
 
 
 }
@@ -53,11 +53,11 @@ class manage extends Actor {
     }
     case (enc: String, x: Int) => {
       println(landchina.lcAr.size)
-      if (landchina.lcAr.size != 0) {
-        for (num <- 1 to x) {
-          context.actorOf(Props[taskWork]) !("run", enc)
-        }
-      }
+//      if (landchina.lcAr.size != 0) {
+//        for (num <- 1 to x) {
+//          context.actorOf(Props[taskWork]) !("run", enc)
+//        }
+//      }
     }
 
     case x: String => {
@@ -94,19 +94,19 @@ class taskWork extends Actor {
   override def receive = {
 
     case ("run", enc: String) => {
-      //对landchina数据 分为1 2两张表 根据编号
-      val us = new Units
-      val lcg = new landchinaGet
-      val lc = new landchina
-      val uri = landchina.returnUri
-      landchina.landChinaNum+=1
-      val fc = lcg.httpGet(uri, us.setheader("www.landchina.com"), enc)
-      MyLogger(this.getClass).info( "连接数为"+landchina.landChinaNum +" - - - " +uri )
-
-      //val fc = lcg.httpGetProxy(landchina.returnUri, us.setheader("www.landchina.com"), enc, "182.92.1.222", 8123)
-      //将获取的子页面数据 分别发送到两个线程中解析  解析为两个表
-      context.actorOf(Props[taskLCWork]) !("jP1", fc: String)
-      context.actorOf(Props[taskLCWork]) !("jP2", fc: String)
+      //      //对landchina数据 分为1 2两张表 根据编号
+      //      val us = new Units
+      //      val lcg = new landchinaGet
+      //      val lc = new landchina
+      //      val uri = landchina.returnUri
+      //      landchina.landChinaNum+=1
+      //      val fc = lcg.httpGet(uri, us.setheader("www.landchina.com"), enc)
+      //      MyLogger(this.getClass).info( "连接数为"+landchina.landChinaNum +" - - - " +uri )
+      //
+      //      //val fc = lcg.httpGetProxy(landchina.returnUri, us.setheader("www.landchina.com"), enc, "182.92.1.222", 8123)
+      //      //将获取的子页面数据 分别发送到两个线程中解析  解析为两个表
+      //      context.actorOf(Props[taskLCWork]) !("jP1", fc: String)
+      //      context.actorOf(Props[taskLCWork]) !("jP2", fc: String)
 
     }
   }

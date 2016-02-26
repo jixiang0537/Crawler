@@ -1,24 +1,19 @@
 package com
 
 import java.io.File
-import java.text.SimpleDateFormat
-import java.util.Calendar
-
 import akka.actor.{Props, ActorSystem, Actor}
+import akka.util.Timeout
 import com.IClrawler.Manage.{Cric_Task, NBS_Task}
 import com.IClrawler.TaskWork.{NationalData_WkOther, NationalData_Worker2}
 import com.IClrawler.{httpTest, Units, httpCom}
-import com.TaskWork.NBS_sort
 import net.sf.json.{JSONObject, JSON}
-import org.apache.http.Header
-import org.apache.http.message.BasicHeader
 import org.apache.log4j.{Logger, PropertyConfigurator}
-import org.jsoup.Jsoup
-
-import scala.collection.mutable.ArrayBuffer
+import scala.concurrent.{Await, Future}
 import scala.io.Source
-import scala.sys.Prop
-
+import scala.concurrent.duration._
+import akka.pattern.{ ask, pipe }
+final case class Result(x: Int, s: String, d: Double)
+case object Request
 /**
  * Created by dell on 2016/1/12.
  */
