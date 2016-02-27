@@ -22,7 +22,7 @@ import scala.io.Source
  */
 class Units {
 
-  def deteTask(date1: String, date2: String): Array[String] = {
+  def dateTask(date1: String, date2: String): ArrayBuffer[String] = {
     //返回给定两个日期之间 精度为日 字符串集合 #2014-01-01
     val dateFormat: String = "yyyy-MM-dd"
     val format: SimpleDateFormat = new SimpleDateFormat(dateFormat)
@@ -31,7 +31,7 @@ class Units {
     var eDate = date2
     var tmp: String = null
 
-    if (date1 == date2) {ar += date1 ;return ar.toArray}
+    if (date1 == date2) {ar += date1 ;return ar}
 
     ar += sDate
     ar += eDate
@@ -48,7 +48,7 @@ class Units {
       tmp = format.format(str2Date(format, tmp).getTime + 3600 * 24 * 1000)
     }
 
-    ar.toArray
+    ar
 
   }
 

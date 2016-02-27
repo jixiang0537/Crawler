@@ -58,22 +58,48 @@ object landchina {
 
   }
 
-  def returnErrUri: String = {
-    landchina.lcErrAr.size match {
+  def returnDatePar: String = {
+    landchina.dateAr.size match {
       case 0 => throw new NullUriException
       case _ => {
-        val uri = landchina.lcErrAr(0)
-        landchina.lcErrAr.remove(0)
-        uri
+        val datePar = landchina.dateAr(0)
+        landchina.dateAr.remove(0)
+        datePar
       }
     }
 
   }
+  def returnErrUri: String = {
+    landchina.lcErrAr.size match {
+      case 0 => return null
+      case _ => {
+        val datePar = landchina.lcErrAr(0)
+        landchina.lcErrAr.remove(0)
+        datePar
+      }
+    }
+
+  }
+  def returnJsUri: String = {
+    landchina.jsAr.size match {
+      case 0 => return null
+      case _ => {
+        val datePar = landchina.jsAr(0)
+        landchina.jsAr.remove(0)
+        datePar
+      }
+    }
+
+  }
+  var dateAr = new ArrayBuffer[String]()
 
   var lcAr = new ArrayBuffer[String]()
 
   var lcErrAr = new ArrayBuffer[String]()
 
+  var jsAr = new ArrayBuffer[String]()
+
+  var jsErrAr = new ArrayBuffer[String]()
 
 }
 

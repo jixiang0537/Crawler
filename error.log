@@ -1,3 +1,4 @@
-2016-02-25 13:50:03  [ main:0 ] - [ ERROR ]  出现错误
-2016-02-25 13:55:12  [ main:0 ] - [ ERROR ]  最是那一低头的温柔,恰似水莲花不胜风寒的娇羞
-2016-02-26 16:01:26  [ CrawlerAkka-akka.actor.default-dispatcher-2:147811 ] - [ ERROR ]  脚本 或 页面 出错 ===- - - - -E:\phantomjs-2.0.0-windows\bin\phantomjs.exe --load-images=false E:\Cz\ICrawler\src\main\scala\Phantomjs\demo.js 2014-01-02 13
+2016-02-27 20:56:23  [ CrawlerAkka-akka.actor.default-dispatcher-5:61986 ] - [ ERROR ]  脚本 或 页面 出错 ===2005-04-13- - - - -E:\phantomjs-2.0.0-windows\bin\phantomjs.exe --load-images=false E:\Cz\ICrawler\src\main\scala\Phantomjs\demo.js 2005-04-13 1
+2016-02-27 21:18:51  [ CrawlerAkka-akka.actor.default-dispatcher-4:597098 ] - [ ERROR ]  脚本 或 页面 出错 ===- - - - -Unable to post!
+
+2016-02-27 22:16:27  [ CrawlerAkka-akka.actor.default-dispatcher-2:34261 ] - [ ERROR ]  脚本 或 页面 出错 ===- - - - -

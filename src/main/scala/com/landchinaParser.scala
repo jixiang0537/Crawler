@@ -104,8 +104,6 @@ class taskLCWork extends Actor {
       val lp = new landchinaParser
       val rp = new runPhantom
 
-      Thread.sleep(Random.nextInt(50000))
-
       val cmdLink = lp.mkLCPLink(date)
       val content = rp.runJS(cmdLink)
       log info (cmdLink)
@@ -122,23 +120,22 @@ class taskLCWork extends Actor {
             }
             //如果页面数量 为多
             case x: String if x.toInt > 1 => {
-              for (i <- 1 to x.toInt) {
-                //根据当前页面参数重复请求每个页面 获取每个页面
-                val link = lp.mkLCPLink(date, i)
-                MyLogger(this.getClass) info (link)
-                context.actorOf(Props[taskLCWork]) !("subTask", link)
-                Thread.sleep(Random.nextInt(50000))
+              sender() !("landchina", content)
 
-                //                val thisCon = rp.runJS(link)
-                //                sender() !("landchina", thisCon)
+              for (i <- 2 to x.toInt) {
+                //根据当前页面参数重复请求每个页面 获取每个页面
+
+                val link = lp.mkLCPLink(date, i)
+                landchina.jsAr += link
+                // context.actorOf(Props[subWork]) !("subTask", link)
 
               }
             }
+
           }
-
         }
-      }
 
+      }
     }
     case ("jP1", content: String) => {
       //根据唯一ID 分表存储数据
@@ -156,19 +153,28 @@ class taskLCWork extends Actor {
       lcq.insetData(ar(0), ar(1), ar(2), ar(3), ar(4), ar(5), ar(6), ar(7), ar(8))
 
     }
+
+
+  }
+}
+
+class subWork extends Actor {
+  val log = MyLogger(this.getClass)
+
+  override def receive = {
     case ("subTask", link: String) => {
+
       val rp = new runPhantom
       rp.runJS(link) match {
         case "false" => log error ("错误 - - -" + link)
-        case x: String if x.length < 500 => log error (s"脚本 或 页面 出错 ===- - - - -" + link)
-        case x: String =>sender() !("landchina", x)
+        case x: String if x.length < 500 => log error (s"脚本 或 页面 出错 ===- - - - -" + link); landchina.jsErrAr += link
+        case x: String => sender() !("landchina", x)
         case _ => log error ("错误-" + link)
 
       }
 
 
     }
-
 
   }
 }

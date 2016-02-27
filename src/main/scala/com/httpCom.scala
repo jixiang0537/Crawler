@@ -21,8 +21,8 @@ trait httpCom {
 
 
   def httpPost(postUri: String, unitAr: Array[Header], ar: util.ArrayList[BasicNameValuePair], encoding: String = "utf-8"): String = {
-    val requestConfig = RequestConfig.custom().setConnectTimeout(10000).
-      setConnectionRequestTimeout(10000).setSocketTimeout(10000).build()
+    val requestConfig = RequestConfig.custom().setConnectTimeout(100000).
+      setConnectionRequestTimeout(100000).setSocketTimeout(100000).build()
     val IHttpclient = HttpClients.custom()
       .setDefaultRequestConfig(requestConfig).build()
 
@@ -49,8 +49,8 @@ trait httpCom {
 
   def httpPostProxy(postUri: String, unitAr: Array[Header], ar: util.ArrayList[BasicNameValuePair], encoding: String = "utf-8", Proxy: String): String = {
     val hProxy = new HttpHost(Proxy, 80, "http");
-    val requestConfig = RequestConfig.custom().setConnectTimeout(10000).
-      setConnectionRequestTimeout(10000).setSocketTimeout(10000).setProxy(hProxy)
+    val requestConfig = RequestConfig.custom().setConnectTimeout(100000).
+      setConnectionRequestTimeout(100000).setSocketTimeout(100000).setProxy(hProxy)
       .build()
     val IHttpclient = HttpClients.custom()
       .setDefaultRequestConfig(requestConfig).build()
@@ -77,8 +77,8 @@ trait httpCom {
 
   def httpGet(getUri: String, unitAr: Array[Header], encoding: String = "utf-8"): String = {
 
-    val requestConfig = RequestConfig.custom().setConnectTimeout(10000).
-      setConnectionRequestTimeout(10000).setSocketTimeout(10000).build()
+    val requestConfig = RequestConfig.custom().setConnectTimeout(100000).
+      setConnectionRequestTimeout(100000).setSocketTimeout(100000).build()
     val IHttpclient = HttpClients.custom()
     .setDefaultRequestConfig(requestConfig)
  //   setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy())
@@ -110,8 +110,8 @@ trait httpCom {
 
     val hProxy = new HttpHost(Proxy, port, "http");
 
-    val requestConfig = RequestConfig.custom().setConnectTimeout(10000).
-      setConnectionRequestTimeout(10000).setSocketTimeout(10000)
+    val requestConfig = RequestConfig.custom().setConnectTimeout(100000).
+      setConnectionRequestTimeout(100000).setSocketTimeout(100000)
       .setProxy(hProxy)
       .build()
 
