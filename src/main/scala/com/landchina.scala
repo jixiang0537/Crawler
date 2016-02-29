@@ -25,8 +25,8 @@ class landchina {
       }
 
       list.toArray
-    }catch {
-      case ex:Exception=>throw new WebPageGetException(ex.getMessage)
+    } catch {
+      case ex: Exception => throw new WebPageGetException(ex.getMessage)
     }
   }
 
@@ -46,14 +46,14 @@ class landchinaGet extends httpCom {
 
 object landchina {
   var landChinaNum = 0
+
   def returnUri: String = {
     landchina.lcAr.size match {
-      case 0 => throw new NullUriException
-      case _ => {
-        val uri = landchina.lcAr(0)
+      case x: Int if x != 0 => val uri = landchina.lcAr(0)
         landchina.lcAr.remove(0)
         uri
-      }
+      case _ => return null
+
     }
 
   }
@@ -69,6 +69,7 @@ object landchina {
     }
 
   }
+
   def returnErrUri: String = {
     landchina.lcErrAr.size match {
       case 0 => return null
@@ -80,6 +81,7 @@ object landchina {
     }
 
   }
+
   def returnJsUri: String = {
     landchina.jsAr.size match {
       case 0 => return null
@@ -91,6 +93,7 @@ object landchina {
     }
 
   }
+
   var dateAr = new ArrayBuffer[String]()
 
   var lcAr = new ArrayBuffer[String]()
