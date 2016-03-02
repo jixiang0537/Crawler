@@ -1,6 +1,5 @@
 package com
 
-import Exception.{NullResponseException, NullUriException}
 import akka.actor.{Props, Actor}
 import com.SQL.{landchinaOther_Sql, landchina_Sql}
 import org.jsoup.Jsoup
@@ -114,7 +113,6 @@ class taskLCWork extends Actor {
           lp.getLCPageNum(con) match {
             case x: String if x.toInt == 1 => {
               val lc = new landchina
-              val rp = new runPhantom
              val ar =  lc jsoupParserLd (content)
               //landchina.lcMap ++= ((lc jsoupParserLd (content).foreach(),date))
               ar.foreach(

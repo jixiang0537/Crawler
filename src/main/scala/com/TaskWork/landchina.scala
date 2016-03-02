@@ -50,7 +50,9 @@ object landchina {
   def returnUri: (String, String) = {
     landchina.lcMap.size match {
       case x: Int if x != 0 =>
-        landchina.lcMap.head
+        val map = landchina.lcMap.head
+        landchina.lcMap -= map._1
+        map
 
       case _ => return null
 
@@ -90,6 +92,9 @@ object landchina {
       case _ => {
         landchina.jsMap.head
 
+        val map = landchina.jsMap.head
+        landchina.jsMap -= map._1
+        map
       }
     }
 

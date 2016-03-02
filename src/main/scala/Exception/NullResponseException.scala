@@ -1,10 +1,8 @@
 package Exception
 
-import com.landchina
-
 /**
- * Created by dell on 2016/1/19.
+ * Created by dell on 2016/3/2.
  */
-class NullResponseException(getUri: String) extends Exception{
- // landchina.lcMap+=getUri
+class NullResponseException extends Exception{
+
 }

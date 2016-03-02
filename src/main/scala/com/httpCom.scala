@@ -4,7 +4,7 @@ import java.io.{IOException, InputStreamReader, BufferedReader}
 import java.net.URL
 import java.util
 
-import Exception.{NullResponseException, WebPageGetException}
+import Exception.WebPageGetException
 import org.apache.http.{HttpHost, Header}
 import org.apache.http.client.config.RequestConfig
 import org.apache.http.client.entity.UrlEncodedFormEntity
@@ -96,7 +96,7 @@ trait httpCom {
         val content = try {
           Source.fromInputStream(response.getEntity.getContent, encoding).mkString
         } catch {
-          case ex: Exception => throw new NullResponseException(getUri)
+          case ex: Exception => throw new NullPointerException(getUri)
         }
         content.toString
       }

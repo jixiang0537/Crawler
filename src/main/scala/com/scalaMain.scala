@@ -11,7 +11,7 @@ import net.sf.json.{JSONObject, JSON}
 import org.apache.log4j.{Logger, PropertyConfigurator}
 import scala.concurrent.{Await, Future}
 import scala.io.Source
-import akka.pattern.{ ask, pipe }
+import akka.pattern.{ask, pipe}
 import slick.driver.H2Driver.api._
 
 /**
@@ -20,24 +20,29 @@ import slick.driver.H2Driver.api._
 object scalaMain {
   def main(args: Array[String]): Unit = {
 
-    var lcMap = scala.collection.mutable.Map[String,String]()
+  val map = scala.collection.mutable.Map[String,String]()
+    map+= (("1","2"),("3","4"),("5","6"),("7","8"),("9","10"))
 
-    lcMap +=(("1","2"),("3","4"),("5","6"),("7","8"))
+    val map3 = scala.collection.mutable.Map[String,String]()
 
-    lcMap.foreach(e=>println(e._1,e._2))
+    map3+=(("1","2"))
 
-    val format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    format.setTimeZone(TimeZone.getTimeZone("GMT+8"))
-    val date = format.format(new Date())
-    val str = "MYH-AUTH-MD5 app_key=161600037&sign=56DF7A2FA851EE87764E5AB02E6F560A&timestamp="+date
-println(str)    // val db = Database.forURL("jdbc:sqlserver://127.0.0.1:1433;DatabaseName=Idatabase", "sa", "197313", driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver")
+ //   val map2 =map --= map3
 
-//    val suppliers = TableQuery[Suppliers]
-//
-//    try {
-//
-//
-//    } finally db.close
+    map.foreach(e=>println(e._1+" : "+e._2))
+
+
+
+//   println(map2._1+":"+map2._2)
+
+    // val db = Database.forURL("jdbc:sqlserver://127.0.0.1:1433;DatabaseName=Idatabase", "sa", "197313", driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver")
+
+    //    val suppliers = TableQuery[Suppliers]
+    //
+    //    try {
+    //
+    //
+    //    } finally db.close
 
 
     //        val tp = new textP
@@ -63,13 +68,22 @@ println(str)    // val db = Database.forURL("jdbc:sqlserver://127.0.0.1:1433;Dat
   }
 
 }
+class text extends httpCom{}
+
 class Suppliers(tag: Tag) extends Table[(Int, String, String, String, String, String)](tag, "SUPPLIERS") {
-  def id = column[Int]("SUP_ID", O.PrimaryKey) // This is the primary key column
+  def id = column[Int]("SUP_ID", O.PrimaryKey)
+
+  // This is the primary key column
   def name = column[String]("SUP_NAME")
+
   def street = column[String]("STREET")
+
   def city = column[String]("CITY")
+
   def state = column[String]("STATE")
+
   def zip = column[String]("ZIP")
+
   // Every table needs a * projection with the same type as the table's type parameter
   def * = (id, name, street, city, state, zip);
 }
