@@ -26,7 +26,7 @@ class landchina {
 
       list.toArray
     } catch {
-      case ex: Exception => throw new WebPageGetException(ex.getMessage)
+      case ex: Exception => throw new Exception(ex.getMessage)
     }
   }
 
@@ -47,12 +47,13 @@ class landchinaGet extends httpCom {
 object landchina {
   var landChinaNum = 0
 
-  def returnUri: String = {
-    landchina.lcAr.size match {
-      case x: Int if x != 0 => val uri = landchina.lcAr(0)
-        landchina.lcAr.remove(0)
-        uri
+  def returnUri: (String, String) = {
+    landchina.lcMap.size match {
+      case x: Int if x != 0 =>
+        landchina.lcMap.head
+
       case _ => return null
+
 
     }
 
@@ -77,18 +78,18 @@ object landchina {
         val datePar = landchina.lcErrAr(0)
         landchina.lcErrAr.remove(0)
         datePar
+
       }
     }
 
   }
 
-  def returnJsUri: String = {
-    landchina.jsAr.size match {
+  def returnJsUri: (String, String) = {
+    landchina.jsMap.size match {
       case 0 => return null
       case _ => {
-        val datePar = landchina.jsAr(0)
-        landchina.jsAr.remove(0)
-        datePar
+        landchina.jsMap.head
+
       }
     }
 
@@ -96,13 +97,18 @@ object landchina {
 
   var dateAr = new ArrayBuffer[String]()
 
-  var lcAr = new ArrayBuffer[String]()
+  // var lcMap = new ArrayBuffer[String]()
 
   var lcErrAr = new ArrayBuffer[String]()
 
-  var jsAr = new ArrayBuffer[String]()
+  //  var jsMap = new ArrayBuffer[String]()
 
   var jsErrAr = new ArrayBuffer[String]()
+
+  var lcMap = scala.collection.mutable.Map[String,String]()
+
+  var jsMap = scala.collection.mutable.Map[String,String]()
+
 
 }
 

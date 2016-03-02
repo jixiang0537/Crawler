@@ -256,3 +256,4 @@
 
 2016-02-29 10:28:33  [ CrawlerAkka-akka.actor.default-dispatcher-10:58155341 ] - [ ERROR ]  脚本 或 页面 出错 ===- - - - -Unable to post!
 
+2016-02-29 13:31:21  [ CrawlerAkka-akka.actor.default-dispatcher-4:115799 ] - [ ERROR ]  脚本 或 页面 出错 ===2011-03-07- - - - -E:\phantomjs-2.0.0-windows\bin\phantomjs.exe --load-images=false E:\Cz\ICrawler\src\main\scala\Phantomjs\demo.js 2011-03-07 1

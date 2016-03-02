@@ -1,3 +1,6 @@
+/**
+ * Created by dell on 2016/3/2.
+ */
 import java.io.{File, InputStreamReader, BufferedReader}
 import java.lang.Thread
 import akka.actor.{Actor, Props, ActorSystem}
@@ -21,10 +24,11 @@ import scala.util.Random
 object CrawlerAkka extends App {
   PropertyConfigurator.configure("log4j.properties");
   val config = ConfigFactory.load()
-  val system = ActorSystem("CrawlerAkka", config.getConfig("akka").withFallback(config))
-  val system2 = ActorSystem("CrawlerAkk", config.getConfig("akka").withFallback(config))
-  val greet = system2.actorOf(Props[work], "overseer")
-  val task = system2.actorOf(Props[work], "task")
+  val system = ActorSystem("CrawlerAkka1", config.getConfig("akka").withFallback(config))
+
+
+  val greet = system.actorOf(Props[work], "overseer")
+  val task = system.actorOf(Props[work], "task")
 
   val runJs = system.actorOf(Props[manage])
 
@@ -40,12 +44,13 @@ object CrawlerAkka extends App {
 
 
   val us = new Units
-  val dataAr = us.dateTask("2007-01-01", "2016-03-02")
+  val dataAr = us.dateTask("2011-02-11", "2016-03-02")
   landchina.dateAr ++= dataAr
+
   val enc = "gb2312"
   system.scheduler.schedule(0 second, 5 second, runJs, ("start", 1))(system.dispatcher, task2)
 
-  system2.scheduler.schedule(0 second, 1 second, greet, ("req", enc, 40))(system.dispatcher, task)
+  system.scheduler.schedule(0 second, 1 second, greet, ("req", enc, 40))(system.dispatcher, task)
 
 
   // system.scheduler.schedule(0 second, 30 second, err, ("errUri", enc))(system.dispatcher, task3)
@@ -65,15 +70,18 @@ class runJS extends Actor {
     case ("runjs") => {
       landchina.returnJsUri match {
         case null => println()
-        case uri: String => val rp = new runPhantom
-          log info (uri)
-          rp.runJS(uri) match {
-            case "false" => log error ("错误 - - -" + uri)
+        case link: String => val rp = new runPhantom
+          log info (link)
+          rp.runJS(link) match {
+            case "false" => log error ("错误 - - -" + link)
             case x: String if x.length < 500 => log error (s"脚本 或 页面 出错 ===- - - - -" + x);
-            case x: String => val lc = new landchina
-              val rp = new runPhantom
-              landchina.lcAr ++= (lc jsoupParserLd (x))
-            case _ => log error ("错误-" + uri)
+            case x: String =>
+              val lc = new landchina
+              val ar = lc jsoupParserLd (x)
+              ar.foreach(
+                uri => landchina.lcMap += ((uri, link.split("js")(1)))
+              )
+            case _ => log error ("错误-" + link)
 
           }
       }
@@ -107,26 +115,27 @@ class manage extends Actor {
     //    }
     case ("start", x: Int) => {
       landchina.dateAr.size match {
-        case size: Int if size > 0 => val datePar = landchina.returnDatePar
+        case size: Int if size > 0 =>
+          val datePar = landchina.returnDatePar
           context.actorOf(Props[taskLCWork]) !("dataTask", datePar)
-        case _ =>
+        case _ => println()
       }
       //获得 日期 19xx xx xx 集合 发送线程开始任务 根据日期调用phantom脚本
 
 
     }
-    case ("landchina", content: String) => {
-      // landchina 根据抓取的页面内容 分析子页面链接 加入任务队列 landchina.lcAr
-      val lc = new landchina
-      val rp = new runPhantom
-      landchina.lcAr ++= (lc jsoupParserLd (content))
-    }
+    //    case ("landchina", content: String) => {
+    //      // landchina 根据抓取的页面内容 分析子页面链接 加入任务队列 landchina.lcAr
+    //      val lc = new landchina
+    //      val rp = new runPhantom
+    //      landchina.lcMap += (lc jsoupParserLd (content),date)
+    //    }
 
-
-    case x: String => {
-      println("添加链接 = = =" + x);
-      landchina.lcAr += x
-    }
+    //
+    //    case x: String => {
+    //      println("添加链接 = = =" + x);
+    //      landchina.lcMap += x
+    //    }
   }
 
 }
@@ -161,16 +170,15 @@ class taskWork extends Actor {
       val us = new Units
       val lcg = new landchinaGet
       val lc = new landchina
-      val uri = landchina.returnUri
-      if (uri != null) {
+      val uriMap = landchina.returnUri
+      if (uriMap != null) {
         landchina.landChinaNum += 1
         //   val fc = lcg.httpGet(uri, us.setheader("www.landchina.com"), enc)
         try {
-          MyLogger(this.getClass).info("连接数为" + landchina.landChinaNum + " - - - " + uri)
           //   val fc = lcg.httpGet(uri, us.setheader("www.landchina.com"), enc)
 
-          val fc = lcg.httpGetProxy(uri, us.setheader("www.landchina.com"), enc, "182.92.1.222", 8123)
-
+          val fc = lcg.httpGetProxy(uriMap._1, us.setheader("www.landchina.com"), enc, "182.92.1.222", 8123)
+          MyLogger(this.getClass).info("连接数为" + landchina.landChinaNum + "时间为 - " +uriMap._2+" - - - " + uriMap._1)
 
           //将获取的子页面数据 分别发送到两个线程中解析  解析为两个表
           val jp = new landchinaParser
@@ -182,7 +190,7 @@ class taskWork extends Actor {
           val ar2 = jp.jP2(fc)
           lcq2.insetData(ar2(0), ar2(1), ar2(2), ar2(3), ar2(4), ar2(5), ar2(6), ar2(7), ar2(8))
         } catch {
-          case ex: Exception => landchina.lcErrAr += uri
+          case ex: Exception =>
         }
       }
     }
@@ -195,7 +203,6 @@ class taskWork extends Actor {
       uri match {
         case null => println()
         case _ => {
-          //   val fc = lcg.httpGet(uri, us.setheader("www.landchina.com"), enc)
           try {
 
 
@@ -203,7 +210,6 @@ class taskWork extends Actor {
 
             val fc = lcg.httpGetProxy(uri, us.setheader("www.landchina.com"), enc, "182.92.1.222", 8123)
             MyLogger(this.getClass).info("连接数为" + landchina.landChinaNum + " - - - " + uri)
-
             //根据唯一ID 分表存储数据
             val jp = new landchinaParser
             val lcq = new landchina_Sql
@@ -226,4 +232,5 @@ class taskWork extends Actor {
 
 
 }
+
 
