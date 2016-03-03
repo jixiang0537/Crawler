@@ -8,6 +8,7 @@ import com.typesafe.config.ConfigFactory
 import org.apache.http.Header
 import org.apache.http.client.methods.{HttpGet}
 import org.apache.http.impl.client.{DefaultConnectionKeepAliveStrategy, HttpClients}
+import org.apache.http.message.BasicHeader
 import org.apache.log4j.{PropertyConfigurator, Logger}
 import scala.concurrent.duration._
 import scala.util.Random
@@ -40,12 +41,12 @@ object CrawlerAkka extends App {
 
 
   val us = new Units
-  val dataAr = us.dateTask("2007-01-01", "2016-03-02")
+  val dataAr = us.dateTask("2012-02-02", "2013-01-01")
   landchina.dateAr ++= dataAr
   val enc = "gb2312"
   system.scheduler.schedule(0 second, 5 second, runJs, ("start", 1))(system.dispatcher, task2)
 
-  system2.scheduler.schedule(0 second, 1 second, greet, ("req", enc, 40))(system.dispatcher, task)
+  system2.scheduler.schedule(0 second, 1 second, greet, ("req", enc, 30))(system.dispatcher, task)
 
 
   // system.scheduler.schedule(0 second, 30 second, err, ("errUri", enc))(system.dispatcher, task3)
@@ -64,16 +65,21 @@ class runJS extends Actor {
   override def receive = {
     case ("runjs") => {
       landchina.returnJsUri match {
-        case null => println()
-        case uri: String => val rp = new runPhantom
-          log info (uri)
-          rp.runJS(uri) match {
-            case "false" => log error ("错误 - - -" + uri)
-            case x: String if x.length < 500 => log error (s"脚本 或 页面 出错 ===- - - - -" + x);
-            case x: String => val lc = new landchina
+        case null =>
+        case uri: (String,String) =>
+          val rp = new runPhantom
+          log info (uri._1)
+          rp.runJS(uri._1) match {
+            case "false" => log error ("错误 - - -" + uri._1)
+            case x: String if x.length < 500 => log error (s"脚本 或 页面 出错 ===- - - - -" + uri._1);
+            case content: String => val lc = new landchina
               val rp = new runPhantom
-              landchina.lcAr ++= (lc jsoupParserLd (x))
-            case _ => log error ("错误-" + uri)
+             val ar = lc jsoupParserLd (content)
+              ar.foreach(
+              usbUri =>landchina.lcMap += ((usbUri,uri._2))
+              )
+
+            case _ => log error ("错误-" + uri._1)
 
           }
       }
@@ -115,18 +121,8 @@ class manage extends Actor {
 
 
     }
-    case ("landchina", content: String) => {
-      // landchina 根据抓取的页面内容 分析子页面链接 加入任务队列 landchina.lcAr
-      val lc = new landchina
-      val rp = new runPhantom
-      landchina.lcAr ++= (lc jsoupParserLd (content))
-    }
 
 
-    case x: String => {
-      println("添加链接 = = =" + x);
-      landchina.lcAr += x
-    }
   }
 
 }
@@ -166,10 +162,20 @@ class taskWork extends Actor {
         landchina.landChinaNum += 1
         //   val fc = lcg.httpGet(uri, us.setheader("www.landchina.com"), enc)
         try {
-          MyLogger(this.getClass).info("连接数为" + landchina.landChinaNum + " - - - " + uri)
           //   val fc = lcg.httpGet(uri, us.setheader("www.landchina.com"), enc)
 
-          val fc = lcg.httpGetProxy(uri, us.setheader("www.landchina.com"), enc, "182.92.1.222", 8123)
+
+          val getkey = new getMayiKey
+
+          val key = getkey.getAPPKEY
+          val arb = us.setheader("www.landchina.com").toBuffer
+
+          arb += new BasicHeader("Proxy-Authorization", key)
+
+
+          val fc = lcg.httpGetProxy(uri._1, arb.toArray, enc, "182.92.1.222", 8123)
+
+          MyLogger(this.getClass).info("连接数为" + landchina.landChinaNum+"时间 - -"+uri._2+ " - - - " + uri._1)
 
 
           //将获取的子页面数据 分别发送到两个线程中解析  解析为两个表
@@ -182,7 +188,7 @@ class taskWork extends Actor {
           val ar2 = jp.jP2(fc)
           lcq2.insetData(ar2(0), ar2(1), ar2(2), ar2(3), ar2(4), ar2(5), ar2(6), ar2(7), ar2(8))
         } catch {
-          case ex: Exception => landchina.lcErrAr += uri
+          case ex: Exception => landchina.lcErrAr += uri._1
         }
       }
     }
@@ -201,7 +207,15 @@ class taskWork extends Actor {
 
             //    val fc = lcg.httpGet(uri, us.setheader("www.landchina.com"), enc)
 
-            val fc = lcg.httpGetProxy(uri, us.setheader("www.landchina.com"), enc, "182.92.1.222", 8123)
+            val getkey = new getMayiKey
+
+            val key = getkey.getAPPKEY
+            val arb = us.setheader("www.landchina.com").toBuffer
+
+            arb += new BasicHeader("Proxy-Authorization", key)
+
+
+            val fc = lcg.httpGetProxy(uri, arb.toArray, enc, "182.92.1.222", 8123)
             MyLogger(this.getClass).info("连接数为" + landchina.landChinaNum + " - - - " + uri)
 
             //根据唯一ID 分表存储数据

@@ -93,13 +93,7 @@ class taskLCWork extends Actor {
   val log = MyLogger(this.getClass)
 
   override def receive = {
-    case ("landchina", content: String) => {
-      // landchina 根据抓取的页面内容 分析子页面链接 加入任务队列 landchina.lcAr
-      val lc = new landchina
-      val rp = new runPhantom
-      landchina.lcAr ++= (lc jsoupParserLd (content))
-    }
-    //landchina 传入时间参数 执行Phantom脚本 根据当前日期页面参数进行分析
+
     case ("dataTask", date: String) => {
       val lp = new landchinaParser
       val rp = new runPhantom
@@ -115,18 +109,25 @@ class taskLCWork extends Actor {
           //获得当前日期页面页数 如果页面数量 为1
           lp.getLCPageNum(con) match {
             case x: String if x.toInt == 1 => {
-              sender() !("landchina", content)
+              val lc = new landchina
+              val ar = lc jsoupParserLd (content)
+              ar.foreach(
+                subUri => landchina.lcMap += ((subUri, date))
+              )
 
             }
             //如果页面数量 为多
             case x: String if x.toInt > 1 => {
-              sender() !("landchina", content)
+              val lc = new landchina
+              val ar = lc jsoupParserLd (content)
+              ar.foreach(
+                subUri => landchina.lcMap += ((subUri, date))
+              )
 
               for (i <- 2 to x.toInt) {
                 //根据当前页面参数重复请求每个页面 获取每个页面
-
                 val link = lp.mkLCPLink(date, i)
-                landchina.jsAr += link
+                landchina.jsMap += ((link, date))
                 // context.actorOf(Props[subWork]) !("subTask", link)
 
               }
