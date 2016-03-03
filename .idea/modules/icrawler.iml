@@ -50,6 +50,10 @@
     <orderEntry type="library" name="SBT: stax:stax-api:1.0.1:jar" level="project" />
     <orderEntry type="library" name="SBT: com.hynnet:sqljdbc4-chs:4.0.2206.100:jar" level="project" />
     <orderEntry type="library" name="SBT: log4j:log4j:1.2.17:jar" level="project" />
+    <orderEntry type="library" name="SBT: com.typesafe.slick:slick_2.11:3.1.1:jar" level="project" />
+    <orderEntry type="library" name="SBT: org.reactivestreams:reactive-streams:1.0.0:jar" level="project" />
+    <orderEntry type="library" name="SBT: org.slf4j:slf4j-api:1.7.10:jar" level="project" />
+    <orderEntry type="library" name="SBT: org.slf4j:slf4j-nop:1.6.4:jar" level="project" />
     <orderEntry type="library" name="guava-19.0" level="project" />
   </component>
 </module>

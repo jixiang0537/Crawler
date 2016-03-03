@@ -7,6 +7,8 @@ scalaVersion := "2.11.7"
 resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
 
 libraryDependencies ++= Seq(
+  "com.typesafe.slick" %% "slick" % "3.1.1",
+  "org.slf4j" % "slf4j-nop" % "1.6.4",
   "org.apache.poi" % "poi" % "3.13",
   "org.apache.httpcomponents" % "httpclient" % "4.5.1",
   "org.jsoup" % "jsoup" % "1.8.2",
