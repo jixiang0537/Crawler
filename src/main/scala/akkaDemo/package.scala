@@ -22,8 +22,10 @@ import scala.util.Random
 object CrawlerAkka extends App {
   PropertyConfigurator.configure("log4j.properties");
   val config = ConfigFactory.load()
-  val system = ActorSystem("CrawlerAkka", config.getConfig("akka").withFallback(config))
-  val system2 = ActorSystem("CrawlerAkk", config.getConfig("akka").withFallback(config))
+  val system = ActorSystem("CrawlerAkka1", config.getConfig("akka").withFallback(config))
+  val system2 = ActorSystem("CrawlerAkk2", config.getConfig("akka").withFallback(config))
+  val system3 = ActorSystem("CrawlerAkk3", config.getConfig("akka").withFallback(config))
+
   val greet = system2.actorOf(Props[work], "overseer")
   val task = system2.actorOf(Props[work], "task")
 
@@ -41,13 +43,12 @@ object CrawlerAkka extends App {
 
 
   val us = new Units
-  val dataAr = us.dateTask("2012-02-02", "2013-01-01")
+  val dataAr = us.dateTask("2012-02-10", "2013-01-01")
   landchina.dateAr ++= dataAr
   val enc = "gb2312"
   system.scheduler.schedule(0 second, 5 second, runJs, ("start", 1))(system.dispatcher, task2)
 
-  system2.scheduler.schedule(0 second, 1 second, greet, ("req", enc, 30))(system.dispatcher, task)
-
+  system3.scheduler.schedule(0 second, 1 second, greet, ("req", enc, 30))(system.dispatcher, task)
 
   // system.scheduler.schedule(0 second, 30 second, err, ("errUri", enc))(system.dispatcher, task3)
 
