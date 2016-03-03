@@ -199,7 +199,7 @@ class taskWork extends Actor {
       val lcg = new landchinaGet
       val uri = landchina.returnErrUri
       uri match {
-        case null => println()
+        case null =>
         case _ => {
           //   val fc = lcg.httpGet(uri, us.setheader("www.landchina.com"), enc)
           try {
