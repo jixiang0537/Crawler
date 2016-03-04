@@ -49,11 +49,14 @@ object landchina {
 
   def returnUri: (String, String) = {
     landchina.lcMap.size match {
-      case x: Int if x != 0 =>
+      case 0 => return null
+      case _ => {
+        landchina.lcMap.head
+
         val map = landchina.lcMap.head
         landchina.lcMap -= map._1
         map
-
+      }
       case _ => return null
 
 

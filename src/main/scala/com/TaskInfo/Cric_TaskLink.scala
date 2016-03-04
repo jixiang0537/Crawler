@@ -17,9 +17,9 @@ class Cric_TaskLink(task: Cric_DataInfo) {
 
 
   var quarterlyDate = ""
-  var weekDate = "2015年52周:2016年01周"
-  var monthDate = "2015年09月:2015年12月"
-  var dayDate = "2015-12-14:2015-01-04"
+  var weekDate = "2016年01周:2016年08周"
+  var monthDate = "2015年12月:2016年02月"
+  var dayDate = "2015-01-04:2016-03-03"
 
   def quarterLandLink = {
     val quarterLandLink = List(

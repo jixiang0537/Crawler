@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <excludeFromCompile>
-      <file url="file://$PROJECT_DIR$/src/main/scala/akkaDemo/akkaHttp.scala" />
-      <file url="file://$PROJECT_DIR$/src/main/scala/com/landchina.scala" />
-      <file url="file://$PROJECT_DIR$/src/main/scala/Exception/NullResponseException.scala" />
-    </excludeFromCompile>
     <resourceExtensions />
     <wildcardResourcePatterns>
       <entry name="!?*.java" />

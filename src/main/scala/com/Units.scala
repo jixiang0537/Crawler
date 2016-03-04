@@ -2,7 +2,7 @@ package com.IClrawler
 
 import java.io._
 import java.text.{ParseException, SimpleDateFormat}
-import java.util.{TimeZone, Date, Calendar}
+import java.util.{Date, Calendar}
 
 
 import com.IClrawler.SQL.NBS_ConnectSql
@@ -31,10 +31,7 @@ class Units {
     var eDate = date2
     var tmp: String = null
 
-    if (date1 == date2) {
-      ar += date1;
-      return ar
-    }
+    if (date1 == date2) {ar += date1 ;return ar}
 
     ar += sDate
     ar += eDate
@@ -207,16 +204,6 @@ class Units {
 }
 
 object Units {
-  def getAPPKEY: String = {
-    //蚂蚁代理getAPPKEY
-    val format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    format.setTimeZone(TimeZone.getTimeZone("GMT+8"))
-    val date = format.format(new Date())
-
-    val str = "MYH-AUTH-MD5 app_key=161600037&sign=7980240717A7161E85F62DB97478D478&timestamp=" + date
-    str
-  }
-
   def setheader(host: String, referer: String = ""): ArrayBuffer[Header] = {
     val ret = new ArrayBuffer[Header]()
     ret += new BasicHeader("Host", host)

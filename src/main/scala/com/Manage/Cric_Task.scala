@@ -9,9 +9,7 @@ import com.IClrawler.TaskWork.{Worker, Cric_HongGuan, Cric_LandWorker}
 class Cric_Task {
   val cityArray = Array[String](
  "北京",
-
  "上海","广州","深圳","南京","杭州","天津","成都","重庆","武汉","沈阳","合肥",
-
     "宁波","无锡","苏州","厦门","常州","南昌","徐州","福州","扬州","江阴","泰州","泉州",
     "漳州","九江","南通","海门","启东","昆山","镇江","宜兴","淮安","盐城","晋江","马鞍山",
     "台州","青岛","济南","太原","烟台","唐山","大厂","固安","廊坊,","燕郊","香河","日照",
@@ -98,6 +96,6 @@ class Cric_Task {
 
 object Cric_Task {
   var cricCookie: String = {
-    "BIGipServerpool_10.0.7=17235978.20480.0000; cric2015=5BC0919F7D6A3578E51C6243302B392CA96E06CF6F33D0C354A6FE808B55B4274F697000155C65612AEDFACCBEC845A46C06DFCD3C488969A95DDBBD73B977310E6F1C47614A0B40291737D8; cric2015_token=username=oJgegXR+5oTEDGyVvTs2RQ==&verifycode=x0GobxKERqkAtkwETPIbjQ==&token=TBxS5Dc9pXVCgg4NI3yXO0c0bqziZxCNW9lX33vsG8EMEf7tfx8PNAKuKRfnDn40&usermobilephone=US0MjG5AgDCZeQFCXzftYQ==&userid=twA47Tj+N+Leoj7tJ6sXCY6GddSuy9pMlljOjP3jz2mF4iJKYN71kc8c8r3h2K7R; Hm_lvt_dca78b8bfff3e4d195a71fcb0524dcf3=1452589588,1452649507,1453790430,1453962589; Hm_lpvt_dca78b8bfff3e4d195a71fcb0524dcf3=1453965204; StatisticCenter=150002%2C150003%2C152002%2C150004%2C152003%2C155002%2C155003%2C155004%2C155005%2C155006%2C155007%2C155008%2C154028%2C154004%2C151004%2C151010%2C151005%2C151002%2C150005%2C150006%2C155009%2C155015%2C155019%2C155010"
+"BIGipServerpool_10.0.7=34013194.20480.0000; cric2015=9A3D85969F0AF5E404B6EEEB1598480079DEC1013ABA193220B07C73794F963253A4270A2E6301924BE9DF5C05AE3E70563DA9032B3FA7CB90D6BC7B90ACF74B53BEA2A51029347B37CCA97F; cric2015_token=username=oJgegXR+5oTEDGyVvTs2RQ==&verifycode=0KAaY5CLYagM6o2G3Ml0Eg==&token=3Pks8xLophJoOb/9fO1U/fiON98SyJ6Ef+B9VWYjkDU0z83Pr1JqDJ1oiXO9e62/&usermobilephone=US0MjG5AgDCZeQFCXzftYQ==&userid=twA47Tj+N+Leoj7tJ6sXCY6GddSuy9pMlljOjP3jz2mF4iJKYN71kc8c8r3h2K7R; Hm_lvt_dca78b8bfff3e4d195a71fcb0524dcf3=1456990813; Hm_lpvt_dca78b8bfff3e4d195a71fcb0524dcf3=1456990913"
   }
 }

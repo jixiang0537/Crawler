@@ -1,5 +1,6 @@
 package com
 
+import Exception.{NullResponseException, NullUriException}
 import akka.actor.{Props, Actor}
 import com.SQL.{landchinaOther_Sql, landchina_Sql}
 import org.jsoup.Jsoup
@@ -92,11 +93,7 @@ class taskLCWork extends Actor {
   val log = MyLogger(this.getClass)
 
   override def receive = {
-    case ("landchina", content: String) => {
-      // landchina 根据抓取的页面内容 分析子页面链接 加入任务队列 landchina.lcAr
 
-    }
-    //landchina 传入时间参数 执行Phantom脚本 根据当前日期页面参数进行分析
     case ("dataTask", date: String) => {
       val lp = new landchinaParser
       val rp = new runPhantom
@@ -113,20 +110,26 @@ class taskLCWork extends Actor {
           lp.getLCPageNum(con) match {
             case x: String if x.toInt == 1 => {
               val lc = new landchina
-             val ar =  lc jsoupParserLd (content)
-              //landchina.lcMap ++= ((lc jsoupParserLd (content).foreach(),date))
+              val ar = lc jsoupParserLd (content)
               ar.foreach(
-              uri => landchina.lcMap += ((uri,date))
+                subUri => landchina.lcMap += ((subUri, date))
               )
+
             }
             //如果页面数量 为多
             case x: String if x.toInt > 1 => {
+              val lc = new landchina
+              val ar = lc jsoupParserLd (content)
+              ar.foreach(
+                subUri => landchina.lcMap += ((subUri, date))
+              )
 
               for (i <- 2 to x.toInt) {
                 //根据当前页面参数重复请求每个页面 获取每个页面
-
                 val link = lp.mkLCPLink(date, i)
-                landchina.jsMap += ((link,date))
+                log error(link)
+
+                landchina.jsMap += ((link, date))
                 // context.actorOf(Props[subWork]) !("subTask", link)
 
               }
@@ -158,23 +161,3 @@ class taskLCWork extends Actor {
   }
 }
 
-class subWork extends Actor {
-  val log = MyLogger(this.getClass)
-
-  override def receive = {
-    case ("subTask", link: String) => {
-
-      val rp = new runPhantom
-      rp.runJS(link) match {
-        case "false" => log error ("错误 - - -" + link)
-        case x: String if x.length < 500 => log error (s"脚本 或 页面 出错 ===- - - - -" + link); landchina.jsErrAr += link
-        case x: String => sender() !("landchina", x)
-        case _ => log error ("错误-" + link)
-
-      }
-
-
-    }
-
-  }
-}
